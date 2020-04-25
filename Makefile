@@ -24,7 +24,7 @@ CC = clang
 all: install
 
 install:
-	clang  libmx.a src/*.c -o ush
+	clang  libmx.a src/*.c src/parse/*.c -o ush
 	@make clean
 
 # $(LBMXS):
@@ -57,3 +57,7 @@ clean:
 	@printf "\x1b[34;1mdeleted $(OBJD)\x1b[0m\n"
 
 reinstall: uninstall install
+
+d:
+	clang  libmx.a src/*.c src/parse/*.c -o ush --debug
+	@make clean

@@ -24,56 +24,6 @@
 
 #include "../libmx/inc/libmx.h"
 
-#include <ctype.h>
-
-#define MX_FUNC_SYMBOLS "\"\'$`(){}\\;"
-#define MX_SLASH_SPEC_DBLQ "`$\"\\"
-#define MX_SLASH_SPEC "`$\"\\ '(){};~"
-
-#define MX_ERR_PARSE_UNMATCH "ush: parse error: unmatched "
-#define MX_ERR_PARSE_CMDSBN "ush: parse error in command substitution\n"
-#define MX_ERR_PARSE_BADSBN "ush: bad substitution\n"
-#define MX_ERR_PARSE_CLSBRC "ush: closing brace expected\n"
-#define MX_ERR_PARSE_CLSPAR "ush: closing parenthesis expected\n"
-#define MX_ERR_PARSE_CLSSINQ "ush: closing single quote expected\n"
-#define MX_ERR_PARSE_UNESCDOL "ush: unescaped dollar sign\n"
-#define MX_ERR_PARSE_UNESCOPPAR "ush: unescaped (\n"
-#define MX_ERR_PARSE_UNESCCLPAR "ush: unescaped )\n"
-#define MX_ERR_PARSE_UNESCOPBRC "ush: unescaped {\n"
-#define MX_ERR_PARSE_UNESCCLBRC "ush: unescaped }\n"
-
-
-enum e_quote {
-    SIN_Q,
-    DBL_Q,
-    TDBL_Q,  //temporary opened stack flag
-    BCK_Q,
-    TBCK_Q,  //temporary opened stack flag
-    DOL_CMD,
-    TDOL_CMD,  //temporary opened stack flag
-    DOL_BP,
-    DOL_P,
-    SLASH,
-    TSLASH,  //temporary opened stack flag
-    SEMICOL,
-    NUM_Q
-};
-
-typedef struct s_quotes_params_data {
-    enum e_quote type;
-    int start;
-    int end;
-}              t_qts_params;
-
-typedef struct s_formatting_list {
-    struct s_quotes_params_data *data;
-    struct s_formatting_list *next;
-}              t_frmt_lst;
-
-// #define MX_ISQUOTE(c) ()
-
-// #include "parse.h"
-
 #define MX_ISEXE(m)      ((m & MX_IFMT) == MX_IFREG && (m & 0111))   
 #define MX_ISBLK(m)      (((m) & MX_IFMT) == MX_IFBLK)                  
 #define MX_ISCHR(m)      (((m) & MX_IFMT) == MX_IFCHR)                  
@@ -156,6 +106,71 @@ typedef struct s_ush {
     struct s_history *hist;
 }              t_ush;
 
+// VLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLAD
+
+#include <ctype.h>
+
+#define MX_FUNC_SYMBOLS "\"\'$`(){}\\;"
+#define MX_SLASH_SPEC_DBLQ "`$\"\\"
+#define MX_SLASH_SPEC "`$\"\\ '(){};~"
+
+#define MX_ERR_PARSE_UNMATCH "ush: parse error: unmatched "
+#define MX_ERR_PARSE_CMDSBN "ush: parse error in command substitution\n"
+#define MX_ERR_PARSE_BADSBN "ush: bad substitution\n"
+#define MX_ERR_PARSE_CLSBRC "ush: closing brace expected\n"
+#define MX_ERR_PARSE_CLSPAR "ush: closing parenthesis expected\n"
+#define MX_ERR_PARSE_CLSSINQ "ush: closing single quote expected\n"
+#define MX_ERR_PARSE_CLSBCKQ "ush: closing backquote expected\n"
+#define MX_ERR_PARSE_UNESCDOL "ush: unescaped dollar sign\n"
+#define MX_ERR_PARSE_UNESCOPPAR "ush: unescaped (\n"
+#define MX_ERR_PARSE_UNESCCLPAR "ush: unescaped )\n"
+#define MX_ERR_PARSE_UNESCOPBRC "ush: unescaped {\n"
+#define MX_ERR_PARSE_UNESCCLBRC "ush: unescaped }\n"
+
+
+enum e_quote {
+    SIN_Q,
+    DBL_Q,
+    TDBL_Q,  //temporary opened stack flag
+    BCK_Q,
+    TBCK_Q,  //temporary opened stack flag
+    DOL_CMD,
+    TDOL_CMD,  //temporary opened stack flag
+    DOL_BP,
+    DOL_P,
+    SLASH,
+    TSLASH,  //temporary opened stack flag
+    SEMICOL,
+    NUM_Q
+};
+
+typedef struct s_quotes_params_data {
+    // enum e_quote type;
+    int start;
+    int end;
+}              t_qts_params;
+
+typedef struct s_formatting_list {
+    struct s_quotes_params_data *data;
+    struct s_formatting_list *next;
+}              t_frmt_lst;
+
+// #define MX_ISQUOTE(c) ()
+
+// #include "parse.h"
+
+
+
+
+
+int mx_check_backquote(char *s, int *i, t_frmt_lst **arr);
+int mx_check_single_quote(char *s, int *i, t_frmt_lst **arr);
+int mx_check_dollar(char *s, int *i, t_frmt_lst **arr);
+void mx_pop_format(t_frmt_lst **del);
+void mx_push_format(t_frmt_lst **add, int start, int end, t_frmt_lst **del);
+
+// VLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLAD
+
 void add_job(t_jobs **j, char **args, pid_t pid);
 t_jobs *mx_create_job(char **data, int num, pid_t pid);
 char **copy_dub_arr(char **args);
@@ -185,4 +200,25 @@ void del_job(t_jobs **jobs, int flag);
 char *cut_str_forjob(char *args);
 bool job_num_find(char *args, t_jobs **jobs);
 bool job_chars_find(char *args, t_jobs **jobs);
+
+#define MX_C_FBLACK   "\x1b[30m"
+#define MX_C_FRED     "\x1b[31m"
+#define MX_C_FGREEN   "\x1b[32m"
+#define MX_C_FYELLOW  "\x1b[33m"
+#define MX_C_FBLUE    "\x1b[34m"
+#define MX_C_FMAGENTA "\x1b[35m"
+#define MX_C_FCYAN    "\x1b[36m"
+#define MX_C_FWHYTE   "\x1b[37m"
+
+#define MX_C_BBLACK   "\x1b[40m"
+#define MX_C_BRED     "\x1b[41m"
+#define MX_C_BGREEN   "\x1b[42m"
+#define MX_C_BYELLOW  "\x1b[43m"
+#define MX_C_BBLUE    "\x1b[44m"
+#define MX_C_BMAGENTA "\x1b[45m"
+#define MX_C_BCYAN    "\x1b[46m"
+#define MX_C_BWHYTE   "\x1b[47m"
+
+#define MX_C_BOLD     "\x1b[1m"
+#define MX_C_RESET    "\x1b[0m"
 
