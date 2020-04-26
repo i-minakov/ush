@@ -1,6 +1,8 @@
 #include "../../inc/ush.h"
 
 void mx_pop_format(t_frmt_lst **del) {
+    if (!del || !*del)
+        return;
     free((*del)->data);
     mx_pop_front((t_list **)del);
 }

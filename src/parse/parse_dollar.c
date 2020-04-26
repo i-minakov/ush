@@ -29,7 +29,7 @@ static int find_dollar_param_end(char *s, int *i, t_frmt_lst **arr) {
     }
     while (isalpha(s[*i + 1]) || isdigit(s[*i + 1]))
         (*i)++;
-    if (*i - start == 1) {  // unescaped $ with no characters
+    if (*i - start == 0) {  // unescaped $ with no characters
         fprintf(stderr, MX_ERR_PARSE_UNESCDOL);
         return -1;
     }
