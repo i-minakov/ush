@@ -168,6 +168,8 @@ int mx_check_single_quote(char *s, int *i, t_frmt_lst **arr);
 int mx_check_dollar(char *s, int *i, t_frmt_lst **arr);
 void mx_pop_format(t_frmt_lst **del);
 void mx_push_format(t_frmt_lst **add, int start, int end, t_frmt_lst **del);
+void mx_push_back_format(t_frmt_lst **add, int start, int end,
+                         t_frmt_lst **del);
 
 // VLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLAD
 

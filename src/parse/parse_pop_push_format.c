@@ -14,3 +14,14 @@ void mx_push_format(t_frmt_lst **add, int start, int end, t_frmt_lst **del) {
     if (del)
         mx_pop_format(del);
 }
+
+void mx_push_back_format(t_frmt_lst **add, int start, int end,
+                         t_frmt_lst **del) {
+    t_qts_params *new = malloc(sizeof(t_qts_params));
+
+    new->start = start;
+    new->end = end;
+    mx_push_back((t_list **)add, new);
+    if (del)
+        mx_pop_format(del);
+}
