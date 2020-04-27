@@ -170,6 +170,11 @@ void mx_pop_format(t_frmt_lst **del);
 void mx_push_format(t_frmt_lst **add, int start, int end, t_frmt_lst **del);
 void mx_push_back_format(t_frmt_lst **add, int start, int end,
                          t_frmt_lst **del);
+int mx_check_double_quote(char *s, int *i, t_frmt_lst **arr);
+int mx_check_open_paren(char *s, int *i, t_frmt_lst **arr);
+int mx_check_close_paren(char *s, int *i, t_frmt_lst **arr);
+int mx_check_open_brace(char *s, int *i, t_frmt_lst **arr);
+int mx_check_close_brace(char *s, int *i, t_frmt_lst **arr);
 
 // VLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLAD
 

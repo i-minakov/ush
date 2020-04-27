@@ -64,7 +64,7 @@ int find_dollar_param_end(char *s, int *i, t_frmt_lst **arr) {
     return 0;
 }
 
-int check_double_quote(char *s, int *i, t_frmt_lst **arr) {
+int mx_check_double_quote(char *s, int *i, t_frmt_lst **arr) {
     if (s[*i] != '\"')
         return 1;
     if (arr[TDBL_Q]) {
@@ -115,14 +115,14 @@ int mx_check_backquote(char *s, int *i, t_frmt_lst **arr) {
     return 0;
 }
 
-int check_open_paren(char *s, int *i, t_frmt_lst **arr) {
+int mx_check_open_paren(char *s, int *i, t_frmt_lst **arr) {
     if (s[*i] != '\(')
         return 1;
     fprintf(stderr, MX_ERR_PARSE_UNESCOPPAR);
     return -1;
 }
 
-int check_close_paren(char *s, int *i, t_frmt_lst **arr) {
+int mx_check_close_paren(char *s, int *i, t_frmt_lst **arr) {
     if (s[*i] != '\)')
         return 1;
     if (arr[TDOL_CMD]) {
@@ -136,14 +136,14 @@ int check_close_paren(char *s, int *i, t_frmt_lst **arr) {
     }
 }
 
-int check_open_brace(char *s, int *i, t_frmt_lst **arr) {
+int mx_check_open_brace(char *s, int *i, t_frmt_lst **arr) {
     if (s[*i] != '\{')
         return 1;
     fprintf(stderr, MX_ERR_PARSE_UNESCOPBRC);
     return -1;
 }
 
-int check_close_brace(char *s, int *i, t_frmt_lst **arr) {
+int mx_check_close_brace(char *s, int *i, t_frmt_lst **arr) {
     if (s[*i] != '\}')
         return 1;
     fprintf(stderr, MX_ERR_PARSE_UNESCCLBRC);
@@ -179,9 +179,9 @@ int check_semicolon(char *s, int *i, t_frmt_lst **arr) {
 }
 
 int mx_get_format_str(char *s, t_frmt_lst **arr) {
-    int (*fptr[10])(char *, int *, t_frmt_lst **) = {check_double_quote,
-    mx_check_single_quote, check_dollar, mx_check_backquote, check_open_paren,
-    check_close_paren, check_open_brace, check_close_brace,
+    int (*fptr[10])(char *, int *, t_frmt_lst **) = {mx_check_double_quote,
+    mx_check_single_quote, check_dollar, mx_check_backquote, mx_check_open_paren,
+    mx_check_close_paren, mx_check_open_brace, mx_check_close_brace,
     check_slash, check_semicolon};
     int func_num;
 

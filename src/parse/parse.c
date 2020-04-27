@@ -18,74 +18,6 @@
 
 // t_frmt_lst *arr[NUM_Q] = {NULL};
 
-int check_double_quote(char *s, int *i, t_frmt_lst **arr) {
-    if (s[*i] != '\"')
-        return 1;
-    if (arr[TDBL_Q]) {
-        if (arr[TDOL_CMD]) {
-            if (arr[TDBL_Q]->data->start > arr[TDOL_CMD]->data->start)
-                mx_push_format(arr + DBL_Q, arr[TDBL_Q]->data->start, *i,
-                               arr + TDBL_Q);
-            else
-                mx_push_format(arr + TDBL_Q, *i, -1, NULL);
-        }
-        else
-            mx_push_format(arr + DBL_Q, arr[TDBL_Q]->data->start, *i,
-                           arr + TDBL_Q);
-    }
-    else
-        mx_push_format(arr + TDBL_Q, *i, -1, NULL);
-    return 0;
-}
-
-int check_open_paren(char *s, int *i, t_frmt_lst **arr) {
-    if (s[*i] != '(')
-        return 1;
-    if (arr[TDBL_Q])
-        return 0;
-    fprintf(stderr, MX_ERR_PARSE_UNESCOPPAR);
-    return -1;
-    arr++;
-}
-
-int check_close_paren(char *s, int *i, t_frmt_lst **arr) {
-    if (s[*i] != ')')
-        return 1;
-    if (arr[TDOL_CMD] && (!arr[TDBL_Q] || (arr[TDBL_Q]
-        && arr[TDBL_Q]->data->start < arr[TDOL_CMD]->data->start))) {
-        mx_push_format(arr + DOL_CMD, arr[TDOL_CMD]->data->start, *i,
-                       arr + TDOL_CMD);
-        return 0;
-    }
-    else if (arr[TDBL_Q])
-        return 0;
-    else {
-        fprintf(stderr, MX_ERR_PARSE_UNESCCLPAR);
-        return -1;
-    }
-}
-
-int check_open_brace(char *s, int *i, t_frmt_lst **arr) {
-    if (s[*i] != '{')
-        return 1;
-    if (arr[TDBL_Q])
-        return 0;
-    fprintf(stderr, MX_ERR_PARSE_UNESCOPBRC);
-    return -1;
-    arr++;  // to trick compiler
-}
-
-int check_close_brace(char *s, int *i, t_frmt_lst **arr) {
-    if (s[*i] != '}')
-        return 1;
-    if (arr[TDBL_Q])
-        return 0;
-    fprintf(stderr, MX_ERR_PARSE_UNESCCLBRC);
-    return -1;
-    arr++;  // to trick compiler
-}
-// echo 123"$(dfjh(f))"
-
 int check_semicolon(char *s, int *i, t_frmt_lst **arr) {
     if (s[*i] != ';')
         return 1;
@@ -119,9 +51,9 @@ int check_slash(char *s, int *i, t_frmt_lst **arr) {
 }
 
 int mx_get_format_str(char *s, t_frmt_lst **arr) {
-    int (*fptr[10])(char *, int *, t_frmt_lst **) = {check_double_quote,
-    mx_check_single_quote, mx_check_dollar, mx_check_backquote, check_open_paren,
-    check_close_paren, check_open_brace, check_close_brace,
+    int (*fptr[10])(char *, int *, t_frmt_lst **) = {mx_check_double_quote,
+    mx_check_single_quote, mx_check_dollar, mx_check_backquote, mx_check_open_paren,
+    mx_check_close_paren, mx_check_open_brace, mx_check_close_brace,
     check_slash, check_semicolon};
     int func_num;
 // dflkl "sdf}ddf
