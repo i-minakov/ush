@@ -1,47 +1,35 @@
-#include "libmx.h"
+#include "../inc/libmx.h"
 
-char *mx_itoa(unsigned long long number) {
-    long int i = 1;
-    char *rez = NULL;
-    
-    if (number == 0) {
-        rez = mx_strdup("0");
-        return rez;
+static short int numlen(int n) {
+    short int len = 1;
+
+    if (n < 0) {
+        len++;
     }
-    for (long n = (number < 0) ? (long) number * -1 : number; n;
-        n /= 10, i++);
-    i = number < 0 ? i++ : i - 1;
-    rez = mx_strnew(i);
-    for (long n = (number < 0) ? (long) number * -1 : number; n;
-        rez[i - 1] = n % 10 + '0', n /= 10, i--);
-    if (number < 0)
-        rez[0] = '-';
-    return rez;
+    while (n /= 10) {
+        len++;
+    }
+    return len;
 }
 
-// char *mx_itoa(long long number)
-// {
-//     if (number == 0) {
-//         char *r = mx_strnew(1);
-//         r[0] = '0';
-//         return r;
-//     }
-//     if (number == -2147483648) {
-//         char *r = "-2147483648";
-//         return r;
-//     }
-//     long long num = number;
-//     int len = 0, f = 0;
-//     for (; num; num /= 10) len++;
-//      if (number < 0) {
-//         number = -number;
-//         f = 1;
-//     }
-//     char *res = mx_strnew(len + 1);
-//     int i;
-//     for (f == 1 ? i = len : (i = len - 1); i >= 0; i--, number /= 10) {
-//         res[i] = number%10 + '0';
-//         if (f == 1 && i == 0) res[i] = '-'; 
-//     }
-//     return res;
-// }
+char *mx_itoa(int number) {
+    int len = 0;
+    char *str = NULL;
+
+    if (number == -2147483648)
+        return "-2147483648";
+    if (!number)
+        return "0";
+    len = numlen(number);
+    str = (char*) malloc(sizeof(char) * (len + 1));
+    str[len] = 0;
+    if (number < 0) {
+        str[0] = '-';
+        number = -number;
+    }
+    for (int i = 0; number; i++) {
+        str[len - 1 - i] = number % 10 + '0';
+        number /= 10;
+    }
+    return str;
+}

@@ -1,30 +1,37 @@
-#include "libmx.h"
+#include "../inc/libmx.h"
+
+static int check_fd(const char *file) {
+    int fd = open(file, O_RDONLY | O_DIRECTORY);
+
+    if (fd < 0) {
+        fd = open(file, O_RDONLY);
+        if (fd > 0) {
+            return fd;
+        }
+    }
+    close(fd);
+    return -1;
+}
 
 char *mx_file_to_str(const char *file) {
-    if (file == NULL) return NULL;
-    char buff[1];
-    long arr = 0;
-    int open_file = open(file, O_RDONLY);
-    if (open_file < 0) return NULL;
-    int read_file = read(open_file, buff, 1);
-    if (read_file < 0) return NULL;
-    while (read_file > 0) {
-        read_file = read(open_file, buff, 1);
-        arr++;
+    int fd = check_fd(file);
+    char buf[1024] = {0};
+    int total = 0;
+    char *s = NULL;
+    int bytes = 0;
+
+    if (fd < 0) {
+        return NULL;
     }
-    close(open_file);
-    char *p = mx_strnew(arr - 1);
-    char suf[1];
-    int i = 0;
-    open_file = open(file, O_RDONLY);
-    if (open_file < 0) return NULL;
-    read_file = read(open_file, suf, 1);
-    if (read_file < 0) return NULL;
-    while (read_file > 0) {
-        p[i] = suf[0];
-        read_file = read(open_file, suf, 1);
-        i++;
-    }
-    close(open_file);
-    return p;
+    while ((bytes = read(fd, buf, 1024)))
+        total += bytes;
+    close(fd);
+    s = mx_strnew(total);
+    fd = open(file, O_RDONLY);
+    for (total = 0; (bytes = read(fd, s + total, 1024));)
+        total += bytes;
+    close(fd);
+    if (*s)
+        return s;
+    return NULL;
 }

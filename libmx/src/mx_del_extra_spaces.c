@@ -1,41 +1,56 @@
-#include "libmx.h"
+#include "../inc/libmx.h"
 
-static bool m_isspace(char c) {
-    return (c == ' ' 
-            || c == '\n'
-            || c == '\t'
-            || c == '\v'
-            || c == '\f'
-            || c == '\r');
+static void skip_spaces(const char *str, int *i) {
+    while (mx_isspace(str[*i])) {
+        (*i)++;
+    }
 }
 
+static void skip_spaces_ncount(const char *str, int *i, int *count) {
+    for (; mx_isspace(str[*i]); (*i)++)
+        *count += 1;
+}
+
+static void skip_untilspace(const char *str, int *i) {
+    while (!mx_isspace(str[*i]) && str[*i]) {
+        (*i)++;
+    }
+}
+
+static char *create_fin_s(int fin_size, const char *s) {
+    char *fin = mx_strnew(fin_size);
+    int i = 0;
+    int j = 0;
+
+    for (j = 0; j < fin_size; j++) {
+        fin[j] = s[i];
+        if (mx_isspace(s[i])) {
+            fin[j] = ' ';
+            skip_spaces(s, &i);
+            continue;
+        }
+        i++;
+    }
+    return fin;
+}
 
 char *mx_del_extra_spaces(const char *str) {
-    if (!str) return NULL;
-    int f = 0, len = 0;
-    str = mx_strtrim(str);
-    for (int i = 0; str[i]; i++) {
-        if (m_isspace(str[i]) && f == 0) {
-            f = 1; 
-            len++;
-        }
-        if (m_isspace(str[i]) && f == 1) continue;
-        else {
-            len++; f = 0;
-        }
-    }
-    char *rez = (char *)malloc(len);
+    char *s = mx_strtrim(str);
     int i = 0;
-    for (int u = 0; str[u]; u++) {
-        if(!m_isspace(str[u])){
-        rez[i] = str[u];
-        i++;
-        }
-        else if(m_isspace(str[u]) && !m_isspace(str[u - 1])) {
-           rez[i] = ' ';
-        i++; 
-        }
-        else continue;
+    int sp_count = 0;
+    int sp_total = 0;
+    char *fin = NULL;
+
+    if (!s)
+        return NULL;
+    while (1) {
+        skip_untilspace(s, &i);
+        if (!s[i])
+            break;
+        sp_count += 1;
+        skip_spaces_ncount(s, &i, &sp_total);
     }
-    return rez;
+    fin = create_fin_s(i - sp_total + sp_count, s);
+    free(s);
+    return fin;
 }

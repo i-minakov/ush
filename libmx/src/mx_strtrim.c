@@ -1,30 +1,30 @@
-#include "libmx.h"
+#include "../inc/libmx.h"
 
-static bool m_isspace(char c) {
-    return (c == ' ' 
-            || c == '\n'
-            || c == '\t'
-            || c == '\v'
-            || c == '\f'
-            || c == '\r');
+static void skip_spaces(const char *str, int *i) {
+    while (mx_isspace(str[*i])) {
+        (*i)++;
+    }
 }
 
+static void skip_untilspace(const char *str, int *i) {
+    while (!mx_isspace(str[*i]) && str[*i]) {
+        (*i)++;
+    }
+}
 
 char *mx_strtrim(const char *str) {
-    if (str == NULL) return NULL;
-    int left;
-    int right;
-    left = 0;
-    right = mx_strlen(str);
-    for (int i = 0; m_isspace(str[i]); i++, left++);
-    for (int i = mx_strlen(str) - 1; m_isspace(str[i]); i--, right--);
-    // if (left == 0
-    //     && right == mx_strlen(str)) return NULL;
-    char *p = mx_strnew(right - left);
-    if ((right - left) <= 0) {
-        char *r = "\0";
-        return r;
+    int len = 0;
+    int min_index = 0;;
+    int nul_index = 0;
+
+    if (!str)
+        return NULL;
+    skip_spaces(str, &len);
+    min_index = len;
+    while (str[len]) {
+        skip_untilspace(str, &len);
+        nul_index = len;
+        skip_spaces(str, &len);
     }
-    mx_strncpy(p, &str[left], right - left);
-    return p;
+    return mx_strndup(str + min_index, nul_index - min_index);
 }

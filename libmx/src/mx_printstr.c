@@ -1,6 +1,5 @@
-#include "libmx.h"
+#include "../inc/libmx.h"
 
-void mx_printstr(const char *s)
-{
-    for (; *s; s++) write(1, s, 1);
+void mx_printstr(const char *s) {
+    write(1, s, mx_strlen(s));
 }

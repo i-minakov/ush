@@ -136,8 +136,8 @@ enum e_quote {
     TBCK_Q,  //temporary opened stack flag
     DOL_CMD,
     TDOL_CMD,  //temporary opened stack flag
-    DOL_BP,
     DOL_P,
+    DOL_BP,
     SLASH,
     TSLASH,  //temporary opened stack flag
     SEMICOL,
@@ -170,11 +170,15 @@ void mx_pop_format(t_frmt_lst **del);
 void mx_push_format(t_frmt_lst **add, int start, int end, t_frmt_lst **del);
 void mx_push_back_format(t_frmt_lst **add, int start, int end,
                          t_frmt_lst **del);
+void mx_free_format_lists(t_frmt_lst **arr);
+void mx_replace_sub_str(char **s, int start, int end, char *replace);
 int mx_check_double_quote(char *s, int *i, t_frmt_lst **arr);
 int mx_check_open_paren(char *s, int *i, t_frmt_lst **arr);
 int mx_check_close_paren(char *s, int *i, t_frmt_lst **arr);
 int mx_check_open_brace(char *s, int *i, t_frmt_lst **arr);
 int mx_check_close_brace(char *s, int *i, t_frmt_lst **arr);
+int mx_get_format_str(char *s, t_frmt_lst **arr);
+void mx_param_expansions(char **str, t_frmt_lst **arr, int last_ret_status);
 
 // VLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLAD
 

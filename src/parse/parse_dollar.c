@@ -4,11 +4,19 @@ static int find_brace_pair(char *s, int *i, t_frmt_lst **arr) {
     int start = *i;
 
     *i += 2;
+    if (s[*i] == '?') {
+        if (s[*i + 1] == '}') {
+            mx_push_back_format(arr + DOL_BP, start, *i + 1, NULL);
+            return 0;
+        }
+        fprintf(stderr, MX_ERR_PARSE_BADSBN);
+        return -1;
+    }
     for (; s[*i]; (*i)++) {
         if (isalpha(s[*i]) || isdigit(s[*i]))
             continue;
         else if (s[*i] == '}') {
-            mx_push_format(arr + DOL_BP, start, *i, NULL);
+            mx_push_back_format(arr + DOL_BP, start, *i, NULL);
             return 0;
         }
         else {
@@ -24,7 +32,7 @@ static int find_dollar_param_end(char *s, int *i, t_frmt_lst **arr) {
     int start = *i;
 
     if (s[*i + 1] == '?') {
-        mx_push_format(arr + DOL_P, start, *i + 1, NULL);
+        mx_push_back_format(arr + DOL_P, start, *i + 1, NULL);
         return 0;
     }
     while (isalpha(s[*i + 1]) || isdigit(s[*i + 1]))
@@ -33,7 +41,7 @@ static int find_dollar_param_end(char *s, int *i, t_frmt_lst **arr) {
         fprintf(stderr, MX_ERR_PARSE_UNESCDOL);
         return -1;
     }
-    mx_push_format(arr + DOL_P, start, *i, NULL);
+    mx_push_back_format(arr + DOL_P, start, *i, NULL);
     return 0;
 }
 

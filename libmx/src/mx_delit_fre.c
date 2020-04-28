@@ -1,4 +1,4 @@
-#include "libmx.h"
+#include "../inc/libmx.h"
 
 char *mx_delit_fre(char *src, char *d) {
     char *s = NULL;

@@ -56,7 +56,7 @@ int mx_get_format_str(char *s, t_frmt_lst **arr) {
     mx_check_close_paren, mx_check_open_brace, mx_check_close_brace,
     check_slash, check_semicolon};
     int func_num;
-// dflkl "sdf}ddf
+
     for (int i = 0; s[i]; i++) {
         if (arr[TSLASH]) {
             if (s[i] == '\\')
@@ -77,9 +77,7 @@ int mx_get_format_str(char *s, t_frmt_lst **arr) {
     return 0;
 }
 
-
 void parse(char *line, t_ush *ush, t_jobs **jobs) {
-    ush++;
     jobs++;
     t_frmt_lst *arr[NUM_Q] = {0};
     char *names[] = {
@@ -98,11 +96,12 @@ void parse(char *line, t_ush *ush, t_jobs **jobs) {
         NULL
     };
 
-    printf("s = <%s>, len = %lu\n" , line, strlen(line) );
     if (mx_get_format_str(line, arr) < 0)
             return;
+    mx_param_expansions(&line, arr, ush->last_return);
+    printf("s = <%s>, len = %lu\n" , line, strlen(line) );
     for (int i = 0; i < NUM_Q; i++) {
-        if (!arr[i])
+        if (!arr[i] || i == DOL_P || i == DOL_BP)
             continue;
         if (i == SLASH) {
             for(t_frmt_lst *p = arr[i]; p; p = p->next) {
@@ -118,6 +117,7 @@ void parse(char *line, t_ush *ush, t_jobs **jobs) {
         }
         printf("\n");
     }
+
 
     // char *res = NULL;
     // char **m = NULL;
