@@ -131,24 +131,32 @@ typedef struct s_ush {
 enum e_quote {
     SIN_Q,
     DBL_Q,
-    TDBL_Q,  //temporary opened stack flag
+    TDBL_Q,  // temporary opened stack flag
     BCK_Q,
-    TBCK_Q,  //temporary opened stack flag
+    TBCK_Q,  // temporary opened stack flag
     DOL_CMD,
-    TDOL_CMD,  //temporary opened stack flag
+    TDOL_CMD,  // temporary opened stack flag
     DOL_P,
     DOL_BP,
     SLASH,
-    TSLASH,  //temporary opened stack flag
+    TSLASH,  // temporary opened stack flag
     SEMICOL,
     NUM_Q
 };
 
+enum e_spec_ch_mark {
+    M_SKP = 1,  // skip this char
+    M_SKSLSH,  // slash to be skipped
+    M_DEL,  // whitespace word separator delimeter
+    M_SEMIC,  // command separator semicolon
+    NUM_MC
+};
+
+
 typedef struct s_quotes_params_data {
-    // enum e_quote type;
     int start;
     int end;
-}              t_qts_params;
+}              t_range;
 
 typedef struct s_formatting_list {
     struct s_quotes_params_data *data;

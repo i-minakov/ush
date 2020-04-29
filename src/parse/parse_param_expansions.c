@@ -10,7 +10,8 @@ static void param_dollar_expansion(char **str, t_frmt_lst **arr,
             mx_replace_sub_str(str, p->data->start, p->data->end, s);
         }
         else {
-            s = strndup(*str + p->data->start + 1, p->data->end - p->data->start);
+            s = strndup(*str + p->data->start + 1,
+                        p->data->end - p->data->start);
             mx_replace_sub_str(str, p->data->start, p->data->end, getenv(s));
         }
         free(s);
@@ -29,7 +30,8 @@ static void param_dollar_braces_expansion(char **str, t_frmt_lst **arr,
             mx_replace_sub_str(str, p->data->start, p->data->end, s);
         }
         else {
-            s = strndup(*str + p->data->start + 2, p->data->end - p->data->start - 2);
+            s = strndup(*str + p->data->start + 2,
+                        p->data->end - p->data->start - 2);
             mx_replace_sub_str(str, p->data->start, p->data->end, getenv(s));
         }
         free(s);

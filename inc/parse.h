@@ -62,7 +62,7 @@ typedef struct s_quotes_params_data {
     enum e_quote type;
     int start;
     int end;
-}              t_qts_params;
+}              t_range;
 
 typedef struct s_formatting_list {
     struct s_quotes_params_data *data;

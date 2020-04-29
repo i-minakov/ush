@@ -8,7 +8,7 @@ void mx_pop_format(t_frmt_lst **del) {
 }
 
 void mx_push_format(t_frmt_lst **add, int start, int end, t_frmt_lst **del) {
-    mx_push_front((t_list **)add, malloc(sizeof(t_qts_params)));
+    mx_push_front((t_list **)add, malloc(sizeof(t_range)));
     (*add)->data->start = start;
     (*add)->data->end = end;
     if (del)
@@ -17,7 +17,7 @@ void mx_push_format(t_frmt_lst **add, int start, int end, t_frmt_lst **del) {
 
 void mx_push_back_format(t_frmt_lst **add, int start, int end,
                          t_frmt_lst **del) {
-    t_qts_params *new = malloc(sizeof(t_qts_params));
+    t_range *new = malloc(sizeof(t_range));
 
     new->start = start;
     new->end = end;

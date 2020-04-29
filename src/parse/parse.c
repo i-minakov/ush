@@ -46,7 +46,7 @@ int check_slash(char *s, int *i, t_frmt_lst **arr) {
     if (!arr[TDOL_CMD])
         mx_push_back_format(arr + SLASH,
             (arr[TDBL_Q] && mx_get_char_index("`$\"\\", s[*i + 1]) >= 0)
-            || !arr[TDBL_Q] ? false : true, -1, NULL);
+            || !arr[TDBL_Q] ? false : true, *i, NULL);
     return 0;
 }
 
@@ -60,7 +60,7 @@ int mx_get_format_str(char *s, t_frmt_lst **arr) {
     for (int i = 0; s[i]; i++) {
         if (arr[TSLASH]) {
             if (s[i] == '\\')
-                mx_push_back_format(arr + SLASH, true, -1, NULL);
+                mx_push_back_format(arr + SLASH, true, i, NULL);
             mx_pop_format(arr + TSLASH);
             continue;
         }
@@ -80,21 +80,21 @@ int mx_get_format_str(char *s, t_frmt_lst **arr) {
 void parse(char *line, t_ush *ush, t_jobs **jobs) {
     jobs++;
     t_frmt_lst *arr[NUM_Q] = {0};
+    char test = '\e';
     char *names[] = {
         "SIN_Q",
         "DBL_Q",
-        "TDBL_Q",  //temporary opened stack flag
+        "TDBL_Q", //temporary opened stack flag
         "BCK_Q",
-        "TBCK_Q",  //temporary opened stack flag
+        "TBCK_Q", //temporary opened stack flag
         "DOL_CMD",
-        "TDOL_CMD",  //temporary opened stack flag
+        "TDOL_CMD", //temporary opened stack flag
         "DOL_BP",
         "DOL_P",
         "SLASH",
-        "TSLASH",  //temporary opened stack flag
+        "TSLASH", //temporary opened stack flag
         "SEMICOL",
-        NULL
-    };
+        NULL};
 
     if (mx_get_format_str(line, arr) < 0)
             return;
@@ -105,7 +105,7 @@ void parse(char *line, t_ush *ush, t_jobs **jobs) {
             continue;
         if (i == SLASH) {
             for(t_frmt_lst *p = arr[i]; p; p = p->next) {
-                printf(p->data->start? "1" : "0");
+                printf(p->data->start ? "1" : "0");
             }
             printf("\n");
             continue;
