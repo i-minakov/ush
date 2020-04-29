@@ -26,7 +26,7 @@ int check_semicolon(char *s, int *i, t_frmt_lst **arr) {
         || !arr[TDOL_CMD])) {
         return 0;
     }
-    mx_push_format(arr + SEMICOL, *i, -1, NULL);
+    mx_push_format(arr + SEMICOL, *i, *i, NULL);
     return 0;
 }
 
@@ -77,28 +77,22 @@ int mx_get_format_str(char *s, t_frmt_lst **arr) {
     return 0;
 }
 
-void parse(char *line, t_ush *ush, t_jobs **jobs) {
-    jobs++;
-    t_frmt_lst *arr[NUM_Q] = {0};
-    char test = '\e';
+static void test1(char *line, t_frmt_lst **arr, t_ush *ush, t_jobs **jobs) {
     char *names[] = {
-        "SIN_Q",
-        "DBL_Q",
-        "TDBL_Q", //temporary opened stack flag
-        "BCK_Q",
-        "TBCK_Q", //temporary opened stack flag
-        "DOL_CMD",
-        "TDOL_CMD", //temporary opened stack flag
-        "DOL_BP",
-        "DOL_P",
-        "SLASH",
-        "TSLASH", //temporary opened stack flag
-        "SEMICOL",
-        NULL};
+    "SIN_Q",
+    "DBL_Q",
+    "TDBL_Q", //temporary opened stack flag
+    "BCK_Q",
+    "TBCK_Q", //temporary opened stack flag
+    "DOL_CMD",
+    "TDOL_CMD", //temporary opened stack flag
+    "DOL_BP",
+    "DOL_P",
+    "SLASH",
+    "TSLASH", //temporary opened stack flag
+    "SEMICOL",
+    NULL};
 
-    if (mx_get_format_str(line, arr) < 0)
-            return;
-    mx_param_expansions(&line, arr, ush->last_return);
     printf("s = <%s>, len = %lu\n" , line, strlen(line) );
     for (int i = 0; i < NUM_Q; i++) {
         if (!arr[i] || i == DOL_P || i == DOL_BP)
@@ -118,7 +112,21 @@ void parse(char *line, t_ush *ush, t_jobs **jobs) {
         printf("\n");
     }
 
+}
 
+void parse(char *line, t_ush *ush, t_jobs **jobs) {
+    jobs++;
+    t_frmt_lst *arr[NUM_Q] = {0};
+    char test = '\e';
+
+    if (mx_get_format_str(line, arr) < 0)
+            return;
+    mx_param_expansions(&line, arr, ush->last_return);
+
+    // test1(line, arr, ush, jobs);
+
+    if (!arr[BCK_Q] && !arr[DOL_CMD])
+        mx_break_words_exec(&line, arr, ush, jobs);
     // char *res = NULL;
     // char **m = NULL;
 

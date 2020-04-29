@@ -127,6 +127,7 @@ typedef struct s_ush {
 #define MX_ERR_PARSE_UNESCOPBRC "ush: unescaped {\n"
 #define MX_ERR_PARSE_UNESCCLBRC "ush: unescaped }\n"
 
+#define MX_IS_SP_TAB_NL(c) (c == '\n' || c == '\t' || c == ' ')
 
 enum e_quote {
     SIN_Q,
@@ -145,11 +146,11 @@ enum e_quote {
 };
 
 enum e_spec_ch_mark {
-    M_SKP = 1,  // skip this char
-    M_SKSLSH,  // slash to be skipped
+    M_SKP = -10,  // skip this char
+    M_SKSL,  // slash to be skipped
     M_DEL,  // whitespace word separator delimeter
     M_SEMIC,  // command separator semicolon
-    NUM_MC
+    NUM_MC = 4
 };
 
 
@@ -179,6 +180,8 @@ void mx_push_format(t_frmt_lst **add, int start, int end, t_frmt_lst **del);
 void mx_push_back_format(t_frmt_lst **add, int start, int end,
                          t_frmt_lst **del);
 void mx_free_format_lists(t_frmt_lst **arr);
+// void mx_mark_chars(char *s, t_frmt_lst **arr);
+void mx_break_words_exec(char **s, t_frmt_lst **arr, t_ush *ush, t_jobs **jobs);
 void mx_replace_sub_str(char **s, int start, int end, char *replace);
 int mx_check_double_quote(char *s, int *i, t_frmt_lst **arr);
 int mx_check_open_paren(char *s, int *i, t_frmt_lst **arr);

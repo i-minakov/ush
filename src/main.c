@@ -25,7 +25,7 @@ int detect_builds(char **args, t_ush *ush, t_jobs **jobs) {
         if (bins != 3)
             return bins;
         else {
-            not_found(args[0], "zsh: command");
+            not_found(args[0], "ush: command");
             return 1;
         }
     }
