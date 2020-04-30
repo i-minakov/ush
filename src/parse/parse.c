@@ -125,8 +125,10 @@ void parse(char *line, t_ush *ush, t_jobs **jobs) {
 
     // test1(line, arr, ush, jobs);
 
-    if (!arr[BCK_Q] && !arr[DOL_CMD])
-        mx_break_words_exec(&line, arr, ush, jobs);
+    // if (arr[BCK_Q] || arr[DOL_CMD])
+
+
+    mx_break_words_exec(&line, arr, ush, jobs);
     // char *res = NULL;
     // char **m = NULL;
 

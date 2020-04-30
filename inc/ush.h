@@ -190,7 +190,7 @@ int mx_check_open_brace(char *s, int *i, t_frmt_lst **arr);
 int mx_check_close_brace(char *s, int *i, t_frmt_lst **arr);
 int mx_get_format_str(char *s, t_frmt_lst **arr);
 void mx_param_expansions(char **str, t_frmt_lst **arr, int last_ret_status);
-
+char *mx_process_output(char **args);
 // VLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLAD
 
 void add_job(t_jobs **j, char **args, pid_t pid);

@@ -1,21 +1,5 @@
 #include "../inc/parse.h"
 
-void get_format_str(char *s, t_frmt_lst **arr) {
-}
-
-int check_slash(char *s, int *i, t_frmt_lst **arr) {
-    if (s[*i] != '\\')
-        return 1;
-    if ((arr[TDBL_Q]  // if in double quotes or next symb. is MX_SLASH_SPEC
-        && (((arr[TDOL_CMD]
-        && arr[TDBL_Q]->data->start > arr[TDOL_CMD]->data->start)
-        || !arr[TDOL_CMD]) && mx_get_char_index("`$\"\\", s[*i + 1]) >= 0))
-        || mx_get_char_index(MX_SLASH_SPEC, s[*i + 1]) >= 0) {
-        mx_push_format(arr + TSLASH, *i, -1, NULL);
-    }
-    return 0;
-}
-
 
 void do_nothing(int sig) {
 }
@@ -54,72 +38,3 @@ int process_output(char **args, t_list *pids) {
     errno = 0;
     return bins;
 }
-
-
-char *subshell_substitution(char *s) {
-
-}
-
-// char *str_replace(char *orig, int start, int end, char *sub) {
-// //     char *new;
-
-// //     if (!sub || !orig)
-// //         return NULL;
-// //     if (end - start + 1 < strlen(sub))
-
-    
-// //     memmove(orig + start + strlen(sub), orig + end + 1,
-// //             strlen(orig + end + 1) + 1);
-// }
-
-
-// bool isquote(char c) {
-//     return c == '\"' || c == '\'' || c == '\`';
-// }
-
-// int find_quote(char *s, int start) {
-//     if (!s)
-//         return -2;
-//     for (int i = start; s[i]; i++)
-//         if (isquote(s[i]))
-//             return i;
-//     return -1;
-// }
-
-// int find_doubquote_pair(char *s, char *q, int start) {
-//     if (!s)
-//         return -2;
-//     for (int i = start; s[i]; i++)
-//         if (s[i] == q && s[i - 1] != '\\')
-//             return i;
-//     return -1;
-// }
-
-// t_qts_params *new_quote_range(int start, int end, char quote) {
-//     t_qts_params *p = malloc(sizeof(t_qts_params));
-
-//     if (!p) {
-//         perror(strerror(errno));
-//         return NULL;
-//     }
-//     p->type = quote;
-//     p->range[0] = start;
-//     p->range[1] = end;
-//     return p;
-// }
-
-// int set_quotes_ranges(char *s, t_list **list) {
-//     int open_q_ind;
-//     int close_q_ind;
-
-//     if (!list || !s || (open_q_ind = find_quote(s, 0)) < 0)
-//         return 0;
-//     if ((close_q_ind = find_dbl_quote_pair(s, s[open_q_ind], open_q_ind + 1) < 0))
-//         return -1;
-//     mx_push_front(list, new_quote_range(open_q_ind, close_q_ind,
-//                                         s[open_q_ind]));
-//     if (s[open_q_ind] == '\`')
-//         str_replace(s, open_q_ind, close_q_ind, subshel_substitution());
-
-// }
-

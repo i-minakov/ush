@@ -42,18 +42,17 @@ static void mx_mark_chars(char *s, t_frmt_lst **arr) {
 
 }
 
-void clear_str(char **str) {
+void clear_str(char **str) {  // !!!
     char *s = *str;
-    int old_p = 0;
     int new_p = 0;
     char *new = calloc(1, strlen(s) + 1);
 
     for (; *s; s++) {
         if (*s == M_SKP)
             continue;
-        new[new_p++] = s[old_p];
+        new[new_p++] = *s;
     }
-    mx_strdel(str);
+    free(*str);
     *str = new;
 }
 
