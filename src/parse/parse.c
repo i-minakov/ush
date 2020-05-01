@@ -1,22 +1,41 @@
 #include "../../inc/ush.h"
 
-// static char **check(char *line) {
-//     char **res = NULL;    
-//     char *tmp = NULL;
+static void test1(char *line, t_frmt_lst **arr, t_ush *ush, t_jobs **jobs) {
+    char *names[] = {
+    "SIN_Q",
+    "DBL_Q",
+    "TDBL_Q", //temporary opened stack flag
+    "BCK_Q",
+    "TBCK_Q", //temporary opened stack flag
+    "DOL_CMD",
+    "TDOL_CMD", //temporary opened stack flag
+    "DOL_BP",
+    "DOL_P",
+    "SLASH",
+    "TSLASH", //temporary opened stack flag
+    "SEMICOL",
+    NULL};
 
-//     if (mx_get_char_index(line, '\\') == -1)
-//         return mx_strsplit(line, ' ');
-//     for (int i = 0; line[i]; i++) {
-        
-//     }
-//     free(line);
-//     res = mx_strsplit(tmp, '*');
-//     for (int i = 0; res[i]; i++)
-//         printf("%s\n", res[i]);
-//     return res;
-// }
+    printf("s = <%s>, len = %lu\n" , line, strlen(line) );
+    for (int i = 0; i < NUM_Q; i++) {
+        if (!arr[i] || i == DOL_P || i == DOL_BP)
+            continue;
+        if (i == SLASH) {
+            for(t_frmt_lst *p = arr[i]; p; p = p->next) {
+                printf(p->data->start ? "1" : "0");
+            }
+            printf("\n");
+            continue;
+        }
+        printf("%d. %s:\n\n", i, names[i]);
+        for(t_frmt_lst *p = arr[i]; p; p = p->next) {
+            printf("%s\n", strndup(line + p->data->start,
+                   p->data->end - p->data->start + 1));
+        }
+        printf("\n");
+    }
 
-// t_frmt_lst *arr[NUM_Q] = {NULL};
+}
 
 int check_semicolon(char *s, int *i, t_frmt_lst **arr) {
     if (s[*i] != ';')
@@ -77,73 +96,20 @@ int mx_get_format_str(char *s, t_frmt_lst **arr) {
     return 0;
 }
 
-static void test1(char *line, t_frmt_lst **arr, t_ush *ush, t_jobs **jobs) {
-    char *names[] = {
-    "SIN_Q",
-    "DBL_Q",
-    "TDBL_Q", //temporary opened stack flag
-    "BCK_Q",
-    "TBCK_Q", //temporary opened stack flag
-    "DOL_CMD",
-    "TDOL_CMD", //temporary opened stack flag
-    "DOL_BP",
-    "DOL_P",
-    "SLASH",
-    "TSLASH", //temporary opened stack flag
-    "SEMICOL",
-    NULL};
-
-    printf("s = <%s>, len = %lu\n" , line, strlen(line) );
-    for (int i = 0; i < NUM_Q; i++) {
-        if (!arr[i] || i == DOL_P || i == DOL_BP)
-            continue;
-        if (i == SLASH) {
-            for(t_frmt_lst *p = arr[i]; p; p = p->next) {
-                printf(p->data->start ? "1" : "0");
-            }
-            printf("\n");
-            continue;
-        }
-        printf("%d. %s:\n\n", i, names[i]);
-        for(t_frmt_lst *p = arr[i]; p; p = p->next) {
-            printf("%s\n", strndup(line + p->data->start,
-                   p->data->end - p->data->start + 1));
-        }
-        printf("\n");
-    }
-
-}
-
-void parse(char *line, t_ush *ush, t_jobs **jobs) {
+int parse(char *line, t_ush *ush, t_jobs **jobs) {
     jobs++;
     t_frmt_lst *arr[NUM_Q] = {0};
     char test = '\e';
 
     if (mx_get_format_str(line, arr) < 0)
-            return;
+        return -1;
     mx_param_expansions(&line, arr, ush->last_return);
-
     // test1(line, arr, ush, jobs);
 
-    // if (arr[BCK_Q] || arr[DOL_CMD])
+    mx_mark_slash_semicolon_dbl_single_quote(line, arr);
+    mx_mark_chars(line, arr);
+    
 
 
     mx_break_words_exec(&line, arr, ush, jobs);
-    // char *res = NULL;
-    // char **m = NULL;
-
-    // char **q = NULL;
-
-    // res = mx_strtrim(line);
-    // mx_strdel(&line);
-
-    // q = mx_strsplit(res, ';');
-    // for (int i = 0; q[i]; i++) {
-    //     m = check(q[i]);
-    //     ush->last_return = detect_builds(m, ush, jobs); 
-    //     mx_del_strarr(&m);
-    // }
-    // mx_del_strarr(&q);
-    // free(res);
-
 }

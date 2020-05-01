@@ -142,6 +142,8 @@ enum e_quote {
     SLASH,
     TSLASH,  // temporary opened stack flag
     SEMICOL,
+    OUT_CMDS,  // outermost command substitutions list - both ` ` and $()
+    OUT_DBQ,  // outermost double quotes list (also not inside of ` ` and $()
     NUM_Q
 };
 
@@ -181,7 +183,7 @@ void mx_push_back_format(t_frmt_lst **add, int start, int end,
                          t_frmt_lst **del);
 void mx_free_format_lists(t_frmt_lst **arr);
 // void mx_mark_chars(char *s, t_frmt_lst **arr);
-void mx_break_words_exec(char **s, t_frmt_lst **arr, t_ush *ush, t_jobs **jobs);
+void mx_break_words_exec(char *s, t_frmt_lst **arr, t_ush *ush, t_jobs **jobs);
 void mx_replace_sub_str(char **s, int start, int end, char *replace);
 int mx_check_double_quote(char *s, int *i, t_frmt_lst **arr);
 int mx_check_open_paren(char *s, int *i, t_frmt_lst **arr);
@@ -190,7 +192,10 @@ int mx_check_open_brace(char *s, int *i, t_frmt_lst **arr);
 int mx_check_close_brace(char *s, int *i, t_frmt_lst **arr);
 int mx_get_format_str(char *s, t_frmt_lst **arr);
 void mx_param_expansions(char **str, t_frmt_lst **arr, int last_ret_status);
-char *mx_process_output(char **args);
+static void mx_mark_slash_semicolon_dbl_single_quote(char *s, t_frmt_lst **arr);
+char *mx_clear_str(char *str);
+char *mx_process_output(char *str, int (*parse_p)(char *, t_ush *, t_jobs **),
+                        t_ush *ush, t_jobs **jobs);
 // VLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLAD
 
 void add_job(t_jobs **j, char **args, pid_t pid);
@@ -208,7 +213,7 @@ void free_list(t_hst **list);
 void free_list2(t_list **list);
 int ush_which(char **args);
 int straus_proc(char **args, t_jobs **jobs);
-void parse(char *line, t_ush *ush, t_jobs **jobs);
+int parse(char *line, t_ush *ush, t_jobs **jobs);
 int detect_builds(char **args, t_ush *ush, t_jobs **jobs);
 
 int detect_exp(char **proc, t_hst *start_h, t_list **env_set);

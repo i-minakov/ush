@@ -7,7 +7,7 @@ static t_range *is_inside_of(int i, enum e_quote type, t_frmt_lst **arr) {
     return NULL;
 }
 
-static void mark_slash_semicolon_dbl_single_quote(char *s, t_frmt_lst **arr) {
+void mx_mark_slash_semicolon_dbl_single_quote(char *s, t_frmt_lst **arr) {
     for (t_frmt_lst *p = arr[SLASH]; p; p = p->next)
         if (!p->data->start && !is_inside_of(p->data->end, DOL_CMD, arr))
             s[p->data->end] = M_SKSL;
@@ -25,7 +25,7 @@ static void mark_slash_semicolon_dbl_single_quote(char *s, t_frmt_lst **arr) {
     }
 }
 
-static void mx_mark_chars(char *s, t_frmt_lst **arr) {
+void mx_mark_chars(char *s, t_frmt_lst **arr) {
     t_range *range = NULL;
 
     for (int i = 0; s[i]; i++) {
@@ -42,31 +42,37 @@ static void mx_mark_chars(char *s, t_frmt_lst **arr) {
 
 }
 
-void clear_str(char **str) {  // !!!
-    char *s = *str;
+char *mx_clear_str(char *str) {  // !!!
     int new_p = 0;
-    char *new = calloc(1, strlen(s) + 1);
+    char *new = calloc(1, strlen(str) + 1);
 
-    for (; *s; s++) {
+    for (char *s = str; *s; s++) {
         if (*s == M_SKP)
             continue;
         new[new_p++] = *s;
     }
-    free(*str);
-    *str = new;
+    free(str);
+    return new;
 }
 
-void mx_break_words_exec(char **s, t_frmt_lst **arr, t_ush *ush, t_jobs **jobs) {
+char *mark_cmd_sbst_output(char *s) {
+    
+}
+
+void mx_break_words_exec(char *s, t_frmt_lst **arr, t_ush *ush, t_jobs **jobs) {
     int com_count;
     char **commands;
     char ***args;
 
-    mark_slash_semicolon_dbl_single_quote(*s, arr);
-    mx_mark_chars(*s, arr);
-    clear_str(s);
-    commands = mx_strsplit_ncount(*s, M_SEMIC, &com_count);
+    s = mx_clear_str(s);
+    commands = mx_strsplit_ncount(s, M_SEMIC, &com_count);
     args = calloc(com_count + 1, sizeof(char **));
     for (int i = 0; i < com_count; i++)
         ush->last_return = detect_builds(
             (args[i] = mx_strsplit(commands[i], M_DEL)), ush, jobs);
+    mx_del_strarr(commands);
+    for (char **p = *args; p; p++)
+        mx_del_strarr(p);
+    free(args);
+    free(s);
 }
