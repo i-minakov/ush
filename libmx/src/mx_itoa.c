@@ -17,9 +17,9 @@ char *mx_itoa(int number) {
     char *str = NULL;
 
     if (number == -2147483648)
-        return "-2147483648";
+        return mx_strdup("-2147483648");
     if (!number)
-        return "0";
+        return mx_strdup("0");
     len = numlen(number);
     str = (char*) malloc(sizeof(char) * (len + 1));
     str[len] = 0;

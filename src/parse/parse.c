@@ -96,20 +96,49 @@ int mx_get_format_str(char *s, t_frmt_lst **arr) {
     return 0;
 }
 
+void mx_mark_chars(char *s, t_frmt_lst **arr) {
+    t_range *range = NULL;
+
+    for (int i = 0; s[i]; i++) {
+        if ((range = mx_is_inside_of(i, DOL_CMD, arr))
+            || (range = mx_is_inside_of(i, SIN_Q, arr))
+            || (range = mx_is_inside_of(i, BCK_Q, arr)))
+            i = range->end;
+        else if (MX_IS_SP_TAB_NL(s[i]) && !mx_is_inside_of(i, DBL_Q, arr)
+                 && (!i || s[i - 1] != M_SKSL))
+            s[i] = M_DEL;
+    }
+    while((s = strchr(s, M_SKSL)))
+        *s = M_SKP;
+
+}
+
+static void quit_parse(char *line, t_ush *ush, int ret_val,t_frmt_lst **arr ) {
+    mx_free_format_lists(arr);
+    if (line)
+        free(line);
+    if (ret_val >= 0)
+        ush->last_return = ret_val;
+}
+
 int parse(char *line, t_ush *ush, t_jobs **jobs) {
     jobs++;
     t_frmt_lst *arr[NUM_Q] = {0};
     char test = '\e';
 
-    if (mx_get_format_str(line, arr) < 0)
+    if (mx_get_format_str(line, arr) < 0) {  // parse errors
+        quit_parse(line, ush, 0, arr);
         return -1;
+    }
     mx_param_expansions(&line, arr, ush->last_return);
     // test1(line, arr, ush, jobs);
-
     mx_mark_slash_semicolon_dbl_single_quote(line, arr);
     mx_mark_chars(line, arr);
-    
-
-
-    mx_break_words_exec(&line, arr, ush, jobs);
+    if (mx_cmd_substitution(&line, arr, ush, jobs) == -1) {  // parse errors
+        quit_parse(line, ush, 0, arr);
+        return -1;
+    }
+    mx_break_words_exec(line, arr, ush, jobs);
+    quit_parse(line, ush, -1, arr);
+    return 0;
 }

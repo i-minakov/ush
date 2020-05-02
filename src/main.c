@@ -59,6 +59,7 @@ static void start_loop(t_ush *ush, t_jobs *jobs) {
         if (line != NULL && mx_strlen(line) > 0) {
             push_f(&ush->hist, line);
             parse(line, ush, &jobs);
+            system("leaks -q ush");
         }
         tcsetattr(0, TCSAFLUSH, &savetty);
         if (ush->exit >= 0)
@@ -66,6 +67,7 @@ static void start_loop(t_ush *ush, t_jobs *jobs) {
     }
     tcsetattr(0, TCSAFLUSH, &savetty);
     free_list2(&ush->env_set);
+
 }
 
 int main(void) {

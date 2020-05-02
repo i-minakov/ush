@@ -72,37 +72,58 @@ static void unslash_str(char **str) {
 
     for (char *s = *str; *s; s++) {
         if (*s == '\\') {
-            if (flag)
-                continue;
-            else
+            if (!flag && mx_get_char_index("`$\"\\", *(s + 1)) >= 0) {
                 flag = 1;
+                continue;
+            }
+            flag = 0;
         }
+        else if (flag)
+            flag = 0;
         new[new_p++] = *s;
     }
     free(*str);
     *str = new;
 }
 
-static void mark_cmd_sbst_output() {
-    
+static char *mark_cmd_sbst_output(char *str, bool in_quotes) {
+    char *s;
+
+    if (!str)
+        return NULL;
+    for (s = str + strlen(str) - 1; *s == '\n'; s--)
+        *s = M_SKP;
+    if (in_quotes)
+        return str;
+
+    for (s = str; *s && *s != M_SKP; s++) {
+        if (MX_IS_SP_TAB_NL(*s))
+            *s = M_DEL;
+    }
+    return str;
 }
 
-int mx_cmd_substitution(char **str, t_frmt_lst **arr) {
-    t_frmt_lst *list;
-    char *replace;
+int mx_cmd_substitution(char **str, t_frmt_lst **arr,
+                        t_ush *ush, t_jobs **jobs) {  // *str is not freed
+    char *replace = NULL;
     int start_pos;
+    char *process_out = NULL;
+    t_frmt_lst *list;
 
-    // if (!arr[BCK_Q] && !arr[DOL_CMD])
-    //     return 0;
     create_outer_cmd_subst_dblq_list(arr);
-    while (list) {
+    for (; (list = arr[OUT_CMDS]); mx_pop_format(arr + OUT_CMDS)) {
         start_pos = (*str)[list->data->start] == '`' ? list->data->start + 1
                                                      : list->data->start + 2;
         replace = strndup(*str + start_pos, list->data->end - start_pos);
-        if ((*str)[list->data->start] == '`') {
+        if ((*str)[list->data->start] == '`')
             unslash_str(&replace);
-        }
-
+        process_out = mx_process_output(replace, parse, ush, jobs);
+        free(replace);
+        if (!process_out)
+            return -1;
+        replace = mark_cmd_sbst_output(process_out,
+            mx_is_inside_of(list->data->start, OUT_DBQ, arr) ? 1 : 0);
+        paste_cmd_subst(str, replace, list->data, arr);  // replace freed
     }
-    // for ()
+    return 0;
 }

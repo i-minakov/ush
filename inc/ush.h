@@ -192,9 +192,12 @@ int mx_check_open_brace(char *s, int *i, t_frmt_lst **arr);
 int mx_check_close_brace(char *s, int *i, t_frmt_lst **arr);
 int mx_get_format_str(char *s, t_frmt_lst **arr);
 void mx_param_expansions(char **str, t_frmt_lst **arr, int last_ret_status);
-static void mx_mark_slash_semicolon_dbl_single_quote(char *s, t_frmt_lst **arr);
+void mx_mark_slash_semicolon_dbl_single_quote(char *s, t_frmt_lst **arr);
 char *mx_clear_str(char *str);
 char *mx_process_output(char *str, int (*parse_p)(char *, t_ush *, t_jobs **),
+                        t_ush *ush, t_jobs **jobs);
+t_range *mx_is_inside_of(int i, enum e_quote type, t_frmt_lst **arr);
+int mx_cmd_substitution(char **str, t_frmt_lst **arr,
                         t_ush *ush, t_jobs **jobs);
 // VLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLAD
 

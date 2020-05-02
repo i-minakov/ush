@@ -3,12 +3,18 @@
 static void do_nothing(int sig) {
 }
 
-static char *read_output(int fd) {
+static char *read_output(int fd, pid_t pid) {
     int read_bytes;
     char *buf = calloc(1, BUFSIZ);
     char *buf_p = buf;
     int size = BUFSIZ;
+    int status;
 
+    waitpid(pid, &status, WUNTRACED);
+    if (WIFEXITED(status)) {
+        free(buf);
+        return NULL;
+    }
     for ((read_bytes = read(fd, buf_p, BUFSIZ)); read_bytes == BUFSIZ;
         read_bytes = read(fd, buf_p, BUFSIZ)) {
             if (read_bytes == -1) {
@@ -43,5 +49,5 @@ char *mx_process_output(char *str, int (*parse_p)(char *, t_ush *, t_jobs **),
         }
         exit(0);
     }
-    return read_output(p[0]);
+    return read_output(p[0], pid);
 }
