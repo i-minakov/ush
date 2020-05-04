@@ -31,7 +31,7 @@ static void start_loop(t_ush *ush) {
         write (1, "\n", 1);
         if (line != NULL && mx_strlen(line) > 0) {
             push_f(&ush->hist, line);
-            parse(line, ush);
+            mx_parse(line, ush);
              // system("leaks -q ush");
         }
         tcsetattr(0, TCSAFLUSH, &savetty);
@@ -51,7 +51,7 @@ static void pipe_call(t_ush *ush) {
         line = mx_delit_fre(line, ch);
         buf = 0;
     }
-    parse(line, ush);
+    mx_parse(line, ush);
      // system("leaks -q ush");
 }
 

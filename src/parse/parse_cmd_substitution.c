@@ -117,7 +117,7 @@ int mx_cmd_substitution(char **str, t_frmt_lst **arr,
         replace = strndup(*str + start_pos, list->data->end - start_pos);
         if ((*str)[list->data->start] == '`')
             unslash_str(&replace);
-        process_out = mx_process_output(replace, parse, ush);
+        process_out = mx_process_output(replace, mx_parse, ush);
         free(replace);
         if (!process_out)
             return -1;

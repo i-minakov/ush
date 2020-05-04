@@ -121,7 +121,7 @@ static void quit_parse(char *line, t_ush *ush, int ret_val,t_frmt_lst **arr ) {
         ush->last_return = ret_val;
 }
 
-int parse(char *line, t_ush *ush) {
+int mx_parse(char *line, t_ush *ush) {
     t_frmt_lst *arr[NUM_Q] = {0};
     char test = '\e';
 

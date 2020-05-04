@@ -208,7 +208,7 @@ void free_list(t_hst **list);
 void free_list2(t_list **list);
 int ush_which(char **args);
 int straus_proc(char **args, t_jobs **jobs);
-int parse(char *line, t_ush *ush);
+int mx_parse(char *line, t_ush *ush);
 int detect_builds(char **args, t_ush *ush);
 char *mx_strpart(char *str, int index);
 char *stream(int buf, char *line, int *x);
