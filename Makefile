@@ -25,7 +25,8 @@ SANFLAG = -g -fsanitize=address
 all: install
 
 install:
-	clang  libmx.a src/*.c src/parse/*.c -o ush
+	@make -C libmx
+	@clang src/*.c src/parse/*.c libmx/libmx.a -o ush
 	@make clean
 
 # $(LBMXS):

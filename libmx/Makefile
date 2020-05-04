@@ -22,10 +22,10 @@ install: clean
 	@make clean
 
 uninstall: clean
+	@rm -rf ./obj
 	@rm -rf $(NAME)
 
 clean:
-	@rm -rf ./obj
 	@rm -rf $(OBJR)
 
 reinstall: uninstall install

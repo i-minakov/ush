@@ -1,12 +1,14 @@
 #pragma once
-#include <stddef.h>
-#include <stdlib.h>
 #ifdef __APPLE__
     #include <malloc/malloc.h>
 #else
+    #define _GNU_SOURCE
     #include <malloc.h>
     #define malloc_size(x) malloc_usable_size(x)
+    #define reallocf realloc
 #endif
+#include <stddef.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
 #include <fcntl.h>
