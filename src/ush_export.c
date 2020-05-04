@@ -1,6 +1,6 @@
 #include "../inc/ush.h"
 
-char *copy_targ(int count, char *str) {
+static char *copy_targ(int count, char *str) {
     int start = count + 1;
     int end = count;
     char *res;
@@ -15,7 +15,7 @@ char *copy_targ(int count, char *str) {
     return res;
 }
 
-char *zad_pered(char *args, t_list *l) {
+static char *zad_pered(char *args, t_list *l) {
     int res;
     char *r = NULL;
     char *tmp = mx_strjoin(args, "=");
@@ -33,7 +33,7 @@ char *zad_pered(char *args, t_list *l) {
     return r;
 }
 
-char *check(char *args, t_list *start_h) {
+static char *check(char *args, t_list *start_h) {
     t_list *l = start_h;
     char *res = NULL;
 
@@ -44,7 +44,7 @@ char *check(char *args, t_list *start_h) {
     return res;
 }
 
-void ch_env (char *a, char *b) {
+static void ch_env (char *a, char *b) {
     char **tmp;
     char *c = NULL;
     char *d = NULL;
@@ -55,31 +55,18 @@ void ch_env (char *a, char *b) {
         c = mx_strjoin(c, tmp[1]);
     d = mx_strdup(tmp[0]);
     mx_del_strarr(&tmp);
-
     if (c == NULL)
         c = mx_strdup("\0");
     setenv(d, c, 1);
-    // if (c != NULL)
-        mx_strdel(&c);
+    mx_strdel(&c);
     mx_strdel(&d);
-}
-
-int env_print(void) {
-    extern char **environ;
-    for (int i = 0; environ[i]; i++) {
-        write(1, environ[i], mx_strlen(environ[i]));
-        write(1, "\n", 1);
-    }
-    return 0;
 }
 
 int ush_export(char **args, t_list **env_set) {
     char *var = NULL;
 
-// system("leaks -q ush");
     if (args[1] == NULL)
         return env_print();
-
     env_in_list(env_set, args[1]); // дополнние сета експортом
     for (int i = 1; args[i]; i++) {
         var = check(args[i], *env_set);
@@ -88,10 +75,5 @@ int ush_export(char **args, t_list **env_set) {
         if (var != NULL)
             mx_strdel(&var);
     }
-    // extern char **environ;
-    // for (int i = 0; environ[i]; i++) {
-    //     write(1, environ[i], mx_strlen(environ[i]));
-    //     write(1, "\n", 1);
-    // }
     return 0;
 }

@@ -89,8 +89,8 @@ static void unslash_str(char **str) {
 static char *mark_cmd_sbst_output(char *str, bool in_quotes) {
     char *s;
 
-    if (!str)
-        return NULL;
+    if (!str || !*str)
+        return str;
     for (s = str + strlen(str) - 1; *s == '\n'; s--)
         *s = M_SKP;
     if (in_quotes)
@@ -104,7 +104,7 @@ static char *mark_cmd_sbst_output(char *str, bool in_quotes) {
 }
 
 int mx_cmd_substitution(char **str, t_frmt_lst **arr,
-                        t_ush *ush, t_jobs **jobs) {  // *str is not freed
+                        t_ush *ush) {  // *str is not freed
     char *replace = NULL;
     int start_pos;
     char *process_out = NULL;
@@ -117,7 +117,7 @@ int mx_cmd_substitution(char **str, t_frmt_lst **arr,
         replace = strndup(*str + start_pos, list->data->end - start_pos);
         if ((*str)[list->data->start] == '`')
             unslash_str(&replace);
-        process_out = mx_process_output(replace, parse, ush, jobs);
+        process_out = mx_process_output(replace, parse, ush);
         free(replace);
         if (!process_out)
             return -1;

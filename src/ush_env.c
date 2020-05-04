@@ -21,23 +21,30 @@ static int usage(int f, char *arg) {
         write(2, "env: '", 6);
         write(2, arg, mx_strlen(arg));
         write(2, "': No such file or directory\n", 29);
+        exit(0);
     }
 	return 1;
 }
 
 static void e_work(char ***environ, t_env *env) {
+    char **m = NULL;
+
     if (env->flag_i != 1) {
         *environ = env->clear;
         env->clear[0] = NULL;
     }
     for (int i = 0; env->clear[i]; i++)
         env->clear[i] = NULL;
-    for (int i = 0; env->n[i]; i++)
-        putenv(env->n[i]);
+    for (int i = 0; env->n[i]; i++) {
+        m = mx_strsplit(env->n[i], '=');
+        setenv(m[0], m[1], 1);
+        mx_del_strarr(&m);
+    }
+    mx_del_strarr(&env->n);
     free(env);
 }
 
-int check_args(char ***args, t_env *env, char ***environ) {
+static int check_args(char ***args, t_env *env, char ***environ) {
     if ((*args)++ && mx_get_char_index(**args, '-') == 0) {
         if (mx_get_char_index(**args, 'i') > 0) {
             env->flag_i = 1;
@@ -58,7 +65,7 @@ int check_args(char ***args, t_env *env, char ***environ) {
 int ush_env(char **args, t_jobs **jobs) {
     extern char **environ;
     t_env *env = (t_env *)malloc(7 * sizeof(t_env));
-    int status;
+    int status = 0;
 
     env->n = env_copy(environ);
     if (check_args(&args, env, &environ) > 0)

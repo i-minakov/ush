@@ -25,6 +25,8 @@ bool job_num_find(char *args, t_jobs **jobs) {
         del_job(jobs, 1);
     else if (j->num > 0 && j->next != NULL) //остальное
         flag = del_part(jobs, num);
+    else 
+        flag = false;
     mx_strdel(&tmp); /////null
     if (flag == false)
         no_such("fg", args, "job");

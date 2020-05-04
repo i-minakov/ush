@@ -26,7 +26,7 @@ char **contains_var(char *var, char *tmp) {
     return res;  
 }
 
-int find_exp_h(char *str, char *var, t_hst *start_h, t_list **env_set) {
+int find_exp_h(char *str, char *var, t_list **env_set) {
     char **tmp = NULL;
     int res = 0;
     int flag = 0;
@@ -58,7 +58,7 @@ int detect_exp(char **proc, t_hst *start_h, t_list **env_set) {
         env_in_list(env_set, proc[0]);
         for (t_hst *h = start_h; h; h = h->next) {
             if (mx_get_substr_index(h->data, "export") >= 0) {
-                tmp = find_exp_h(h->data, proc[0], start_h, env_set);
+                tmp = find_exp_h(h->data, proc[0], env_set);
                 if (tmp != 3)
                     return tmp;
                 else

@@ -1,31 +1,23 @@
 #include "../inc/ush.h"
 
-static void ctrl_z(int sig) { 
-    write(1, "^Z\n", 3);
-}
-
 int straus_proc(char **args, t_jobs **jobs) {
-    pid_t pid, wait;
-    int bins = 0;
-    int status;
-    int stop = 0;
-
-    signal(SIGTSTP, ctrl_z);
+    pid_t pid;
+    int status = 0;
+    
     pid = fork();
-    if (pid == 0)
-        bins = execvp(*args, args);
-    else {
-        wait = waitpid(pid, &status, WUNTRACED);
-        while (!WIFEXITED(status) && !WIFSIGNALED(status)) {
-            if (WIFSTOPPED(status)) {
-                add_job(jobs, args, pid);
-                break;
-            }
-            wait = waitpid(pid, &status, WUNTRACED);
-            
+    if (pid == 0) {
+        execvp(*args, args);
+        not_found(args[0], "ush: command");
+        exit(127);
+    }
+    for (waitpid(pid, &status, WUNTRACED);
+        !WIFEXITED(status) && !WIFSIGNALED(status);
+        waitpid(pid, &status, WUNTRACED)) {
+        if (WIFSTOPPED(status)) {
+            add_job(jobs, args, pid);
+            break ;
         }
     }
     errno = 0;
-    return bins;
+    return WEXITSTATUS(status);
 }
-

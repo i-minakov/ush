@@ -1,7 +1,12 @@
 #pragma once
 #include <stddef.h>
 #include <stdlib.h>
-#include <malloc/malloc.h>
+#ifdef __APPLE__
+    #include <malloc/malloc.h>
+#else
+    #include <malloc.h>
+    #define malloc_size(x) malloc_usable_size(x)
+#endif
 #include <unistd.h>
 #include <stdbool.h>
 #include <fcntl.h>
@@ -98,6 +103,7 @@ char *mx_del_extra_spaces(const char *str);
 char **mx_strsplit(const char *s, char c);
 char **mx_strsplit_ncount(const char *s, char c, int *count);
 char *mx_strjoin(const char *s1, const char *s2);
+char *mx_cooljoin(char *src, char *d);
 char *mx_file_to_str(const char *file);
 int mx_read_line(char **lineptr, size_t buf_size, char delim, const int fd);
 void mx_bufsize_chars_read(t_tmp *tmp, t_str_len *tail,

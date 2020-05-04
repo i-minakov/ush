@@ -3,9 +3,9 @@
 char *cut_str_forjob(char *args) {
     char *res = NULL;
 
-    if (args[0] == '\0') //%
+    if (args == NULL || args[0] == '\0') //%
         return res;
-    else if (args[0] != '%') // fg alpha
+    else if (args[0] != '%' || (args[0] == '/' && args[0] == '\0')) // fg alpha
         res = mx_strjoin(res, args);
     else { 
         for (int i = 1; args[i]; i++)

@@ -21,7 +21,6 @@
 #include <err.h>
 #include <signal.h>
 #include <stdarg.h>
-#include <ctype.h>
 
 #include "../libmx/inc/libmx.h"
 
@@ -76,7 +75,6 @@ typedef struct s_jobs {
     int num;
     pid_t pid;
     char **data;
-    char *pwd;
     struct s_jobs *next;
 }              t_jobs;
 
@@ -104,10 +102,13 @@ typedef struct s_ush {
     int last_return;
     int exit;
     struct s_list *pids;
-    struct s_jobs *jobs;
     struct s_list *env_set;
     struct s_history *hist;
 }              t_ush;
+
+// VLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLAD
+
+#include <ctype.h>
 
 #define MX_FUNC_SYMBOLS "\"\'$`(){}\\;"
 #define MX_SLASH_SPEC_DBLQ "`$\"\\"
@@ -154,6 +155,7 @@ enum e_spec_ch_mark {
     NUM_MC = 4
 };
 
+
 typedef struct s_quotes_params_data {
     int start;
     int end;
@@ -164,6 +166,14 @@ typedef struct s_formatting_list {
     struct s_formatting_list *next;
 }              t_frmt_lst;
 
+// #define MX_ISQUOTE(c) ()
+
+// #include "parse.h"
+
+
+
+
+
 int mx_check_backquote(char *s, int *i, t_frmt_lst **arr);
 int mx_check_single_quote(char *s, int *i, t_frmt_lst **arr);
 int mx_check_dollar(char *s, int *i, t_frmt_lst **arr);
@@ -173,7 +183,7 @@ void mx_push_back_format(t_frmt_lst **add, int start, int end,
                          t_frmt_lst **del);
 void mx_free_format_lists(t_frmt_lst **arr);
 // void mx_mark_chars(char *s, t_frmt_lst **arr);
-void mx_break_words_exec(char *s, t_frmt_lst **arr, t_ush *ush);
+void mx_break_words_exec(char *s, t_frmt_lst **arr, t_ush *ush, t_jobs **jobs);
 void mx_replace_sub_str(char **s, int start, int end, char *replace);
 int mx_check_double_quote(char *s, int *i, t_frmt_lst **arr);
 int mx_check_open_paren(char *s, int *i, t_frmt_lst **arr);
@@ -184,22 +194,20 @@ int mx_get_format_str(char *s, t_frmt_lst **arr);
 void mx_param_expansions(char **str, t_frmt_lst **arr, int last_ret_status);
 void mx_mark_slash_semicolon_dbl_single_quote(char *s, t_frmt_lst **arr);
 char *mx_clear_str(char *str);
-char *mx_process_output(char *str, int (*parse_p)(char *, t_ush *),
-                        t_ush *ush);
+char *mx_process_output(char *str, int (*parse_p)(char *, t_ush *, t_jobs **),
+                        t_ush *ush, t_jobs **jobs);
 t_range *mx_is_inside_of(int i, enum e_quote type, t_frmt_lst **arr);
 int mx_cmd_substitution(char **str, t_frmt_lst **arr,
-                        t_ush *ush);
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
+                        t_ush *ush, t_jobs **jobs);
+// VLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLADVLAD
 
 void add_job(t_jobs **j, char **args, pid_t pid);
-t_jobs *mx_create_job(char **data, int num, pid_t pid, char *pwd);
+t_jobs *mx_create_job(char **data, int num, pid_t pid);
 char **copy_dub_arr(char **args);
 void free_jobs(t_jobs **jobs);
 void push_f(t_hst **hs, char *data);
 int ush_cd(char **args);
-int ush_env(char **args, t_jobs **jobs);
+int ush_env(char **args, t_jobs **jobs) ;
 int ush_exit(char **args, t_ush *ush);
 int ush_pwd(char **args);
 bool opencheck(char *dirname, t_cd *in);
@@ -208,12 +216,8 @@ void free_list(t_hst **list);
 void free_list2(t_list **list);
 int ush_which(char **args);
 int straus_proc(char **args, t_jobs **jobs);
-int parse(char *line, t_ush *ush);
-int detect_builds(char **args, t_ush *ush);
-char *mx_strpart(char *str, int index);
-char *stream(int buf, char *line, int *x);
-void free_node(t_hst *node);
-int detect_builds(char **args, t_ush *ush);
+int parse(char *line, t_ush *ush, t_jobs **jobs);
+int detect_builds(char **args, t_ush *ush, t_jobs **jobs);
 
 int detect_exp(char **proc, t_hst *start_h, t_list **env_set);
 void env_in_list(t_list **env_set, char *src);
@@ -226,6 +230,25 @@ void del_job(t_jobs **jobs, int flag);
 char *cut_str_forjob(char *args);
 bool job_num_find(char *args, t_jobs **jobs);
 bool job_chars_find(char *args, t_jobs **jobs);
-int name_search(char *tmp , t_jobs *jobs);
-int ush_jobs(char **args, t_jobs **jobs);
-int env_print(void);
+
+#define MX_C_FBLACK   "\x1b[30m"
+#define MX_C_FRED     "\x1b[31m"
+#define MX_C_FGREEN   "\x1b[32m"
+#define MX_C_FYELLOW  "\x1b[33m"
+#define MX_C_FBLUE    "\x1b[34m"
+#define MX_C_FMAGENTA "\x1b[35m"
+#define MX_C_FCYAN    "\x1b[36m"
+#define MX_C_FWHYTE   "\x1b[37m"
+
+#define MX_C_BBLACK   "\x1b[40m"
+#define MX_C_BRED     "\x1b[41m"
+#define MX_C_BGREEN   "\x1b[42m"
+#define MX_C_BYELLOW  "\x1b[43m"
+#define MX_C_BBLUE    "\x1b[44m"
+#define MX_C_BMAGENTA "\x1b[45m"
+#define MX_C_BCYAN    "\x1b[46m"
+#define MX_C_BWHYTE   "\x1b[47m"
+
+#define MX_C_BOLD     "\x1b[1m"
+#define MX_C_RESET    "\x1b[0m"
+

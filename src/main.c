@@ -1,52 +1,25 @@
 #include "../inc/ush.h"
 
-int detect_builds(char **args, t_ush *ush, t_jobs **jobs) {
-    int bins;
-
-    if (!strcmp(args[0], "cd"))
-        return ush_cd(args);
-    if (!strcmp(args[0], "pwd"))
-        return ush_pwd(args);
-    if (!strcmp(args[0], "env"))
-        return ush_env(args, jobs);
-    if (!strcmp(args[0], "exit"))
-        return ush_exit(args, ush);
-    if (!strcmp(args[0], "which"))
-        return ush_which(args);
-    if (!strcmp(args[0], "export"))
-        return ush_export(args, &ush->env_set);
-    if (!strcmp(args[0], "unset"))
-        return ush_unset(args, &ush->env_set);
-    if (!strcmp(args[0], "fg"))
-        return ush_fg(args, jobs);
-    bins = straus_proc(args, jobs);
-    if (bins == -1) {
-        bins = detect_exp(args, ush->hist, &ush->env_set);
-        if (bins != 3)
-            return bins;
-        else {
-            not_found(args[0], "ush: command");
-            return 1;
-        }
-    }
-    return 0;
-}
-
-void ctrl_c(int sig) { 
-    pid_t pid = getppid();
+static void handel(int sig) { 
+    pid_t pid = getpid();
     
-    write(1, "^C\n", 3);
-    kill(pid, SIGINT);
+    if (pid == 0 && sig == 2) {
+        write(1, "^C\n", 3);
+        kill(pid, SIGINT);
+    }
+    if (pid == 0 && sig == 20)
+        write(1, "^Z\n", 3);
 } 
 
-static void start_loop(t_ush *ush, t_jobs *jobs) {
+static void start_loop(t_ush *ush) {
     char *line = NULL;
     struct termios savetty;
     struct termios tty;
     ush->hist = NULL;
     ush->env_set = mx_create_node(NULL);
 
-    signal(SIGINT, ctrl_c);
+    signal(SIGINT, handel);
+    signal(SIGTSTP, handel);
     while (YARIK_PEREPISIVAYET_LS) {
         tcgetattr(0, &tty);
         savetty = tty; 
@@ -58,32 +31,56 @@ static void start_loop(t_ush *ush, t_jobs *jobs) {
         write (1, "\n", 1);
         if (line != NULL && mx_strlen(line) > 0) {
             push_f(&ush->hist, line);
-            parse(line, ush, &jobs);
-            system("leaks -q ush");
+            parse(line, ush);
+             // system("leaks -q ush");
         }
         tcsetattr(0, TCSAFLUSH, &savetty);
         if (ush->exit >= 0)
             break ;
     }
-    tcsetattr(0, TCSAFLUSH, &savetty);
     free_list2(&ush->env_set);
+}
 
+static void pipe_call(t_ush *ush) {
+    int buf = 0;
+    char *line = calloc(1, 1);
+    char *ch = NULL;
+
+    while (read(STDIN_FILENO, &buf, 3) > 0) {
+        ch = (char *)(&buf);
+        line = mx_delit_fre(line, ch);
+        buf = 0;
+    }
+    parse(line, ush);
+     // system("leaks -q ush");
+}
+
+static void set_shell_lvl_up(void) {
+    char *s;
+
+    if (getppid() == 1)
+        return;
+    s = mx_itoa((atoi(getenv("SHLVL"))) + 1);
+    setenv("SHLVL", s, 1);
+    free(s);
 }
 
 int main(void) {
     int ex = 0;
-    t_ush *ush = (t_ush *)malloc(sizeof(t_ush) * 5);
-    t_jobs *jobs = mx_create_job(NULL, -1, -1); 
+    t_ush *ush = (t_ush *)calloc(6, sizeof(t_ush));
+    ush->jobs = mx_create_job(NULL, -1, -1, NULL);
+    set_shell_lvl_up();
 
     ush->exit = -1;
-    if (isatty(0))
-        start_loop(ush, jobs);
-    ex = ush->exit;
-
-    free_jobs(&jobs);
-    free_list(&ush->hist);
+    if (isatty(0)) {
+        start_loop(ush);
+        ex = ush->exit;
+        free_list(&ush->hist);
+        exit(ex);
+    }
+    else
+        pipe_call(ush);
+    free_jobs(&ush->jobs);
     free(ush);
-    exit(ex);
-    // system("leaks -q ush");
     return 0;
 }

@@ -1,6 +1,6 @@
 #include "../../inc/ush.h"
 
-static void test1(char *line, t_frmt_lst **arr, t_ush *ush, t_jobs **jobs) {
+static void test1(char *line, t_frmt_lst **arr, t_ush *ush) {
     char *names[] = {
     "SIN_Q",
     "DBL_Q",
@@ -121,24 +121,24 @@ static void quit_parse(char *line, t_ush *ush, int ret_val,t_frmt_lst **arr ) {
         ush->last_return = ret_val;
 }
 
-int parse(char *line, t_ush *ush, t_jobs **jobs) {
-    jobs++;
+int parse(char *line, t_ush *ush) {
     t_frmt_lst *arr[NUM_Q] = {0};
     char test = '\e';
 
     if (mx_get_format_str(line, arr) < 0) {  // parse errors
-        quit_parse(line, ush, 0, arr);
+        quit_parse(line, ush, 1, arr);
         return -1;
     }
+    
     mx_param_expansions(&line, arr, ush->last_return);
-    // test1(line, arr, ush, jobs);
+    // test1(line, arr, ush);
     mx_mark_slash_semicolon_dbl_single_quote(line, arr);
     mx_mark_chars(line, arr);
-    if (mx_cmd_substitution(&line, arr, ush, jobs) == -1) {  // parse errors
+    if (mx_cmd_substitution(&line, arr, ush) == -1) {  // parse errors
         quit_parse(line, ush, 0, arr);
         return -1;
     }
-    mx_break_words_exec(line, arr, ush, jobs);
-    quit_parse(line, ush, -1, arr);
+    mx_break_words_exec(line, arr, ush);
+    quit_parse(NULL, ush, -1, arr);
     return 0;
 }

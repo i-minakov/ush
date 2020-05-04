@@ -34,11 +34,11 @@ char *mx_clear_str(char *str) {  // !!!
             continue;
         new[new_p++] = *s;
     }
-    // free(str);
+    free(str);
     return new;
 }
 
-void mx_break_words_exec(char *s, t_frmt_lst **arr, t_ush *ush, t_jobs **jobs) {
+void mx_break_words_exec(char *s, t_frmt_lst **arr, t_ush *ush) {
     int com_count;
     char **commands;
     char ***args;
@@ -48,9 +48,11 @@ void mx_break_words_exec(char *s, t_frmt_lst **arr, t_ush *ush, t_jobs **jobs) {
     args = calloc(com_count + 1, sizeof(char **));
     for (int i = 0; i < com_count; i++)
         ush->last_return = detect_builds(
-            (args[i] = mx_strsplit(commands[i], M_DEL)), ush, jobs);
+            (args[i] = mx_strsplit(commands[i], M_DEL)), ush);
     mx_del_strarr(&commands);
+
     for (int i = 0; args[i]; i++)
         mx_del_strarr(args + i);
     free(args);
+    free(s);
 }

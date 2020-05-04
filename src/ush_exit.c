@@ -1,8 +1,7 @@
 #include "../inc/ush.h"
 
+
 int ush_exit(char **args, t_ush *ush){
-    exit(0);
-    write(1, "exit\n", 5);
     if (args[1] == NULL)
         ush->exit = 0;
     else if (args[2]) {

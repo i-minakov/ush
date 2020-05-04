@@ -8,6 +8,7 @@ static void uns_var(t_list **env_set, int count, t_list **b) {
         if (front->next == NULL) {
             free_list2(env_set);
             front = mx_create_node(NULL);
+            *env_set = front;
         }
         else
             mx_pop_front(env_set);
@@ -16,35 +17,42 @@ static void uns_var(t_list **env_set, int count, t_list **b) {
     for (int i = 0; i < count - 1; i++)
         front = front->next;
     front->next = back->next;
-    free(back->data);
-    back->data = NULL;
-    free(back);
-    back = NULL;
+    back->next = NULL;
+    free_list2(&back);
+}
 
+static bool coi(t_list **env, t_list **n, int count, char **tmp) {
+    char **sub = NULL;
+    t_list *f = *n;
+
+    sub =  mx_strsplit(f->data, '=');
+    if (mx_strcmp(sub[0], tmp[0]) == 0) {
+        uns_var(env, count, &f);
+        unsetenv(tmp[0]);
+        mx_del_strarr(&sub);
+        return true;
+    }
+    mx_del_strarr(&sub);
+    return false;
 }
 
 int ush_unset(char **args, t_list **env_set) {
     char **tmp = NULL;
-    char **sub = NULL;
     int count;
+    t_list *f = *env_set;
 
     for (int i = 1; args[i]; i++) {
-        // if не содержит минуса
         tmp = mx_strsplit(args [i], '=');
         count = 0;
-        for (t_list *f = *env_set; f; f = f->next, count++) {
-            if (mx_get_substr_index(f->data, tmp[0]) >= 0) {
-                sub =  mx_strsplit(f->data, '=');
-                if (mx_strcmp(sub[0], tmp[0]) == 0) {
-                    uns_var(env_set, count, &f);
-                    unsetenv(tmp[0]);
-                }
-                mx_del_strarr(&sub);
-            } 
+        if (f != NULL && f->data != NULL) {
+            for ( ; f; f = f->next, count++) {
+                if (mx_get_substr_index(f->data, tmp[0]) >= 0) {
+                    if (coi(env_set, &f, count, tmp))
+                        break ;
+                } 
+            }
         }
         mx_del_strarr(&tmp);
     }
-    //что происходит если вписываю а=b
-    //если нет такой вар флаг оповещение ерр
     return 1;
 }
