@@ -1,43 +1,6 @@
 #include "../../inc/ush.h"
 
-static void test1(char *line, t_frmt_lst **arr, t_ush *ush) {
-    char *names[] = {
-    "SIN_Q",
-    "DBL_Q",
-    "TDBL_Q", //temporary opened stack flag
-    "BCK_Q",
-    "TBCK_Q", //temporary opened stack flag
-    "DOL_CMD",
-    "TDOL_CMD", //temporary opened stack flag
-    "DOL_BP",
-    "DOL_P",
-    "SLASH",
-    "TSLASH", //temporary opened stack flag
-    "SEMICOL",
-    NULL};
-
-    printf("s = <%s>, len = %lu\n" , line, strlen(line) );
-    for (int i = 0; i < NUM_Q; i++) {
-        if (!arr[i] || i == DOL_P || i == DOL_BP)
-            continue;
-        if (i == SLASH) {
-            for(t_frmt_lst *p = arr[i]; p; p = p->next) {
-                printf(p->data->start ? "1" : "0");
-            }
-            printf("\n");
-            continue;
-        }
-        printf("%d. %s:\n\n", i, names[i]);
-        for(t_frmt_lst *p = arr[i]; p; p = p->next) {
-            printf("%s\n", strndup(line + p->data->start,
-                   p->data->end - p->data->start + 1));
-        }
-        printf("\n");
-    }
-
-}
-
-int check_semicolon(char *s, int *i, t_frmt_lst **arr) {
+static int check_semicolon(char *s, int *i, t_frmt_lst **arr) {
     if (s[*i] != ';')
         return 1;
     if (arr[TDBL_Q] && ((arr[TDOL_CMD]
@@ -49,7 +12,7 @@ int check_semicolon(char *s, int *i, t_frmt_lst **arr) {
     return 0;
 }
 
-int check_slash(char *s, int *i, t_frmt_lst **arr) {
+static int check_slash(char *s, int *i, t_frmt_lst **arr) {
     if (s[*i] != '\\')
         return 1;
     if (arr[TDBL_Q]) {
@@ -96,24 +59,8 @@ int mx_get_format_str(char *s, t_frmt_lst **arr) {
     return 0;
 }
 
-void mx_mark_chars(char *s, t_frmt_lst **arr) {
-    t_range *range = NULL;
-
-    for (int i = 0; s[i]; i++) {
-        if ((range = mx_is_inside_of(i, DOL_CMD, arr))
-            || (range = mx_is_inside_of(i, SIN_Q, arr))
-            || (range = mx_is_inside_of(i, BCK_Q, arr)))
-            i = range->end;
-        else if (MX_IS_SP_TAB_NL(s[i]) && !mx_is_inside_of(i, DBL_Q, arr)
-                 && (!i || s[i - 1] != M_SKSL))
-            s[i] = M_DEL;
-    }
-    while((s = strchr(s, M_SKSL)))
-        *s = M_SKP;
-
-}
-
-static void quit_parse(char *line, t_ush *ush, int ret_val,t_frmt_lst **arr ) {
+static void quit_parse(char *line, t_ush *ush, int ret_val, 
+                       t_frmt_lst **arr ) {
     mx_free_format_lists(arr);
     if (line)
         free(line);
@@ -121,24 +68,41 @@ static void quit_parse(char *line, t_ush *ush, int ret_val,t_frmt_lst **arr ) {
         ush->last_return = ret_val;
 }
 
+int parse_exec_command(char *subline, t_ush *ush) {
+    t_frmt_lst *arr[NUM_Q] = {NULL};
+    char **argv;
+
+    mx_get_format_str(subline, arr);
+    mx_mark_slash_dbl_single_quote(subline, arr);
+    mx_mark_chars(subline, arr);
+
+    if (mx_handle_substitutions(&subline, arr, ush) == -1) {  // parse errors
+        quit_parse(NULL, ush, 1, arr);
+        return -1;
+    }
+    subline = mx_clear_str(subline);
+    argv = mx_strsplit(subline, M_DEL);
+    ush->last_return = detect_builds(argv, ush);
+    mx_del_strarr(&argv);
+    free(subline);
+    quit_parse(NULL, ush, -1, arr);
+    return 0;
+}
+
 int mx_parse(char *line, t_ush *ush) {
-    t_frmt_lst *arr[NUM_Q] = {0};
-    char test = '\e';
+    t_frmt_lst *arr[NUM_Q] = {NULL};
+    char **subcommands = {NULL};
+    int com_count;
 
     if (mx_get_format_str(line, arr) < 0) {  // parse errors
         quit_parse(line, ush, 1, arr);
         return -1;
     }
-    
-    mx_param_expansions(&line, arr, ush->last_return);
-    // test1(line, arr, ush);
-    mx_mark_slash_semicolon_dbl_single_quote(line, arr);
-    mx_mark_chars(line, arr);
-    if (mx_cmd_substitution(&line, arr, ush) == -1) {  // parse errors
-        quit_parse(line, ush, 0, arr);
-        return -1;
-    }
-    mx_break_words_exec(line, arr, ush);
-    quit_parse(NULL, ush, -1, arr);
+    mx_mark_semicolon(line, arr);
+    subcommands = mx_strsplit_ncount(line, M_SEMIC, &com_count);
+    for (int i = 0; i < com_count; i++)
+        parse_exec_command(strdup(subcommands[i]), ush);
+    mx_del_strarr(&subcommands);
+    quit_parse(line, ush, -1, arr);
     return 0;
 }

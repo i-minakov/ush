@@ -143,6 +143,7 @@ enum e_quote {
     SEMICOL,
     OUT_CMDS,  // outermost command substitutions list - both ` ` and $()
     OUT_DBQ,  // outermost double quotes list (also not inside of ` ` and $()
+    OUT_SUB,
     NUM_Q
 };
 
@@ -172,8 +173,6 @@ void mx_push_format(t_frmt_lst **add, int start, int end, t_frmt_lst **del);
 void mx_push_back_format(t_frmt_lst **add, int start, int end,
                          t_frmt_lst **del);
 void mx_free_format_lists(t_frmt_lst **arr);
-// void mx_mark_chars(char *s, t_frmt_lst **arr);
-void mx_break_words_exec(char *s, t_frmt_lst **arr, t_ush *ush);
 void mx_replace_sub_str(char **s, int start, int end, char *replace);
 int mx_check_double_quote(char *s, int *i, t_frmt_lst **arr);
 int mx_check_open_paren(char *s, int *i, t_frmt_lst **arr);
@@ -181,15 +180,15 @@ int mx_check_close_paren(char *s, int *i, t_frmt_lst **arr);
 int mx_check_open_brace(char *s, int *i, t_frmt_lst **arr);
 int mx_check_close_brace(char *s, int *i, t_frmt_lst **arr);
 int mx_get_format_str(char *s, t_frmt_lst **arr);
-void mx_param_expansions(char **str, t_frmt_lst **arr, int last_ret_status);
-void mx_mark_slash_semicolon_dbl_single_quote(char *s, t_frmt_lst **arr);
+char *mx_get_subst_replace_str(char **str, t_frmt_lst *list, t_ush *ush);
+void mx_mark_slash_dbl_single_quote(char *s, t_frmt_lst **arr);
+void mx_mark_semicolon(char *s, t_frmt_lst **arr);
+void mx_mark_chars(char *s, t_frmt_lst **arr);
 char *mx_clear_str(char *str);
 char *mx_process_output(char *str, int (*parse_p)(char *, t_ush *),
                         t_ush *ush);
 t_range *mx_is_inside_of(int i, enum e_quote type, t_frmt_lst **arr);
-int mx_cmd_substitution(char **str, t_frmt_lst **arr,
-                        t_ush *ush);
-
+int mx_handle_substitutions(char **str, t_frmt_lst **arr, t_ush *ush);
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 

@@ -18,6 +18,7 @@ char **mx_strsplit_ncount(const char *s, char c, int *count) {
         }
         mx_skipchar(s, c, &i);
     }
-    *count = words_count;
+    if (count)
+        *count = words_count;
     return arr;
 }
