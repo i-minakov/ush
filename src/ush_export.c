@@ -70,7 +70,7 @@ int ush_export(char **args, t_list **env_set) {
     env_in_list(env_set, args[1]); // дополнние сета експортом
     for (int i = 1; args[i]; i++) {
         var = check(args[i], *env_set);
-        if (mx_strcmp(var, "\n") != 0)
+        if (mx_strcmp_null(var, "\n") != 0)
             ch_env (args[i], var);
         if (var != NULL)
             mx_strdel(&var);

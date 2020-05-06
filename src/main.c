@@ -43,7 +43,7 @@ static void start_loop(t_ush *ush) {
 
 static void pipe_call(t_ush *ush) {
     int buf = 0;
-    char *line = calloc(1, 1);
+    char *line = NULL;
     char *ch = NULL;
 
     while (read(STDIN_FILENO, &buf, 3) > 0) {

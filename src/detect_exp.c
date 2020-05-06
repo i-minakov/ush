@@ -9,7 +9,7 @@ char **contains_var(char *var, char *tmp) {
     a = mx_strsplit(var, '=');
     for (int i = 1; exp[i]; i++) {
         b = mx_strsplit(exp[i], '=');
-        if (mx_strcmp(b[0], a[0]) == 0) {
+        if (mx_strcmp_null(b[0], a[0]) == 0) {
             res = (char **) malloc(sizeof(char *) * 3);
             res[0] = mx_strdup("export");
             res[1] = mx_strdup(a[0]);

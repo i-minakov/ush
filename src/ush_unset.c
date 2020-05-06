@@ -26,7 +26,7 @@ static bool coi(t_list **env, t_list **n, int count, char **tmp) {
     t_list *f = *n;
 
     sub =  mx_strsplit(f->data, '=');
-    if (mx_strcmp(sub[0], tmp[0]) == 0) {
+    if (mx_strcmp_null(sub[0], tmp[0]) == 0) {
         uns_var(env, count, &f);
         unsetenv(tmp[0]);
         mx_del_strarr(&sub);
