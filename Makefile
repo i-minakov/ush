@@ -61,5 +61,5 @@ clean:
 reinstall: uninstall install
 
 d:
-	clang  libmx.a src/*.c src/parse/*.c -o ush --debug
+	@clang  libmx/libmx.a src/*.c src/parse/*.c -o ush --debug
 	@make clean

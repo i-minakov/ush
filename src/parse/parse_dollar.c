@@ -1,5 +1,7 @@
 #include "../../inc/ush.h"
 
+static void 
+
 static int find_brace_pair(char *s, int *i, t_frmt_lst **arr) {
     int start = *i;
 
