@@ -1,52 +1,51 @@
-// #include "../../inc/ush.h"
+#include "../../inc/ush.h"
 
-// char *tilde2(char *str) {
-//     char **m = mx_strsplit(str, '/');
+static void tilde2(char **str, char ***arr) {
+    if (strcmp((*arr)[0], "~+") == 0) {
+        mx_replace_sub_str(str, 0, 1, getenv("PWD"));
+    }
+    else if (strcmp((*arr)[0], "~-") == 0) {
+        mx_replace_sub_str(str, 0, 1, getenv("OLDPWD"));
+    }
+    else
+        mx_replace_sub_str(str, 0, 0, getenv("HOME"));
+    mx_del_strarr(arr);
+}
 
-//     if (strcmp(m[0], "~+") == 0) {
-//         mx_del_strarr(&m);
-//         return mx_replace_substr(str, "~+", getenv("PWD"));
-//     }
-//     if (strcmp(m[0], "~-") == 0) {
-//         mx_del_strarr(&m);
-//         return mx_replace_substr(str, "~-", getenv("OLDPWD"));
-//     }
-//     return NULL;
-// }
+static void no_such_user(char **str, char *tmp, char ***m) {
+    fprintf(stderr, MX_ERR_PARSE_NO_SUCH_USER "%s\n", tmp);
+    mx_del_strarr(m);
+    free(tmp);
+}
 
-// char *tilde(char *str) {
-//     char *res = NULL;
-//     char *tmp = NULL;
-//     char **m = NULL;
+static int tilde(char **str) {
+    char *res = NULL;
+    char *tmp = NULL;
+    char **m = mx_strsplit(*str, '/');
 
-//     if (mx_get_char_index(str, '~') != 0)
-//         return NULL;
-//     m = mx_strsplit(str, '/');
-//     if (strcmp(m[0], "~+") == 0 || strcmp(m[0], "~-") == 0) {
-//         mx_del_strarr(&m);
-//         return tilde2(str);
-//     }
-//     tmp = mx_strjoin("~", getenv("USER"));
-//     if (strcmp(m[0], "~") != 0 && strcmp(m[0], tmp) != 0) {
-//         mx_del_strarr(&m);
-//         free(tmp);
-//         return NULL;
-//     }
-//     res = mx_replace_substr(str, m[0], getenv("HOME"));
-//     mx_del_strarr(&m);
-//     free(tmp);
-//     return res;
-// }
+    if (!strcmp(m[0], "~+") || !strcmp(m[0], "~-") || !strcmp(m[0], "~")) {
+        tilde2(str, &m);
+        return 0;
+    }
+    if (!getpwnam((tmp = strndup(*str + 1, strlen(m[0]) - 1)))) {
+        no_such_user(str, tmp, &m);
+        return -1;
+    }
+    mx_replace_sub_str(str, 0, strlen(tmp),
+        (res = mx_strjoin("/Users/", tmp)));
+    mx_del_strarr(&m);
+    free(res);
+    free(tmp);
+    return 0;
+}
 
-// int mx_tilde_expansion(char **argv) {
-//     char *tmp = NULL;
-
-//     for (char **s = argv[1]; *s; s++) {
-//         if ((tmp = tilde(*s)) == NULL) {
-//             return -1;
-//         }
-//         free(*s);
-//         *s = tmp;
-//     }
-//     return 0;
-// }
+int mx_tilde_expansion(char **argv) {
+    for (char **s = argv + 1; *s; s++) {
+        if (**s != '~')
+            continue;
+        if (tilde(s) == -1) {
+            return -1;
+        }
+    }
+    return 0;
+}

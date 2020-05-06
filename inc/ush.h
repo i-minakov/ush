@@ -125,6 +125,7 @@ typedef struct s_ush {
 #define MX_ERR_PARSE_UNESCCLPAR "ush: unescaped )\n"
 #define MX_ERR_PARSE_UNESCOPBRC "ush: unescaped {\n"
 #define MX_ERR_PARSE_UNESCCLBRC "ush: unescaped }\n"
+#define MX_ERR_PARSE_NO_SUCH_USER "ush: no such user or named directory: "
 
 #define MX_IS_SP_TAB_NL(c) (c == '\n' || c == '\t' || c == ' ')
 
@@ -194,8 +195,9 @@ char *mx_get_subst_outputs(char *str, int (*parse_p)(char *, t_ush *),
                            t_ush *ush);
 t_range *mx_is_inside_of(int i, enum e_quote type, t_frmt_lst **arr);
 int mx_handle_substitutions(char **str, t_frmt_lst **arr, t_ush *ush);
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
+int mx_tilde_expansion(char **argv);
+//------------------------------------------------------------------
+//------------------------------------------------------------------
 
 void add_job(t_jobs **j, char **args, pid_t pid);
 t_jobs *mx_create_job(char **data, int num, pid_t pid, char *pwd);
