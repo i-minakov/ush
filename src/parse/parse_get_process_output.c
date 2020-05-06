@@ -69,7 +69,7 @@ char *mx_get_subst_outputs(char *str, int (*parse_p)(char *, t_ush *),
     char *sum_output = NULL;
 
     if (mx_semicolon_split(str, ush, &subcommands) == -1) {  // parse errors
-        mx_quit_parse(str, ush, 1, NULL);
+        mx_quit_parse(NULL, ush, 1, NULL);
         return NULL;
     }
     for (char **s = subcommands; *s; s++) {

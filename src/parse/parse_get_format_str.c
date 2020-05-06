@@ -15,13 +15,11 @@ static int check_semicolon(char *s, int *i, t_frmt_lst **arr) {
 static int check_slash(char *s, int *i, t_frmt_lst **arr) {
     if (s[*i] != '\\')
         return 1;
-    if (arr[TDBL_Q]) {
-        if (((arr[TDOL_CMD]
-            && arr[TDBL_Q]->data->start > arr[TDOL_CMD]->data->start)
-            || !arr[TDOL_CMD])
-            && mx_get_char_index("`$\"\\", s[*i + 1]) >= 0) {
-            mx_push_format(arr + TSLASH, *i, -1, NULL);
-        }
+    if (arr[TDBL_Q] && (((arr[TDOL_CMD]
+        && arr[TDBL_Q]->data->start > arr[TDOL_CMD]->data->start)
+        || !arr[TDOL_CMD])
+        && mx_get_char_index("`$\"\\", s[*i + 1]) >= 0)) {
+        mx_push_format(arr + TSLASH, *i, -1, NULL);
     }
     else if (mx_get_char_index(MX_SLASH_SPEC, s[*i + 1]) >= 0)
         mx_push_format(arr + TSLASH, *i, -1, NULL);

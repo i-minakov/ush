@@ -20,13 +20,13 @@ OBJS = $(addprefix $(OBJD)/, $(SRC:%.c=%.o))
 	
 CFLAGS = -std=c11 -g $(addprefix -W, all extra error pedantic)
 CC = clang
-# SANFLAG = -g -fsanitize=address
+SANFLAG = -g -fsanitize=address
 
 all: install
 
 install:
 	# @make -C libmx
-	@clang src/*.c src/parse/*.c libmx/libmx.a -o ush
+	@clang $(SANFLAG) src/*.c src/parse/*.c libmx/libmx.a -o ush
 	@make clean
 
 # $(LBMXS):

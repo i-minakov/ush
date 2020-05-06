@@ -33,7 +33,7 @@ int mx_semicolon_split(char *line, t_ush *ush, char ***subcommands) {
     t_frmt_lst *arr[NUM_Q] = {NULL};
 
     if (mx_get_format_str(line, arr) < 0) {  // parse errors
-        mx_quit_parse(line, ush, 1, arr);
+        mx_quit_parse(line, ush, 1, arr);  // line is freeed
         return -1;
     }
     mx_mark_semicolon(line, arr);

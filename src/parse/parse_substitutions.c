@@ -47,9 +47,9 @@ int mx_handle_substitutions(char **str, t_frmt_lst **arr, t_ush *ush) {
         if ((*str)[lst->data->start] == '`'
             || (*str)[lst->data->start + 1] == '(') {
             process_out = mx_get_subst_outputs(replace, mx_parse_exec, ush);
-            free(replace);
             if (!process_out)
                 return -1;
+            free(replace);
             replace = mark_sbst_output(process_out,
                 mx_is_inside_of(lst->data->start, OUT_DBQ, arr) ? 1 : 0);
         }
