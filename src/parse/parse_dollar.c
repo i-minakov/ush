@@ -1,19 +1,6 @@
 #include "../../inc/ush.h"
 
-static void 
-
-static int find_brace_pair(char *s, int *i, t_frmt_lst **arr) {
-    int start = *i;
-
-    *i += 2;
-    if (s[*i] == '?') {
-        if (s[*i + 1] == '}') {
-            mx_push_back_format(arr + DOL_BP, start, *i + 1, NULL);
-            return 0;
-        }
-        fprintf(stderr, MX_ERR_PARSE_BADSBN);
-        return -1;
-    }
+static int brace_pair_cycle(char *s, int *i, int start, t_frmt_lst **arr) {
     for (; s[*i]; (*i)++) {
         if (isalpha(s[*i]) || isdigit(s[*i]))
             continue;
@@ -28,6 +15,21 @@ static int find_brace_pair(char *s, int *i, t_frmt_lst **arr) {
     }
     fprintf(stderr, MX_ERR_PARSE_CLSBRC);
     return -1;
+}
+
+static int find_brace_pair(char *s, int *i, t_frmt_lst **arr) {
+    int start = *i;
+
+    *i += 2;
+    if (s[*i] == '?') {
+        if (s[*i + 1] == '}') {
+            mx_push_back_format(arr + DOL_BP, start, *i + 1, NULL);
+            return 0;
+        }
+        fprintf(stderr, MX_ERR_PARSE_BADSBN);
+        return -1;
+    }
+    return brace_pair_cycle(s, i, start, arr);
 }
 
 static int find_dollar_param_end(char *s, int *i, t_frmt_lst **arr) {
