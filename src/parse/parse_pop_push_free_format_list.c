@@ -27,6 +27,8 @@ void mx_push_back_format(t_frmt_lst **add, int start, int end,
 }
 
 void mx_free_format_lists(t_frmt_lst **arr) {
+    if (!arr)
+        return;
     for (int i = 0; i < NUM_Q; i++)
         while (arr[i])
             mx_pop_format(arr + i);

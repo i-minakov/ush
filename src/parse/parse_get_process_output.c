@@ -1,8 +1,5 @@
 #include "../../inc/ush.h"
 
-static void do_nothing(int sig) {
-}
-
 static bool check_if_exited(pid_t pid, char *buf) {
     int status;
 
@@ -28,9 +25,6 @@ static char *read_output(pid_t pid, int *pipe) {
     char *buf_p = buf;
     int size = BUFSIZ;
 
-    // if (check_if_exited(pid, buf))
-    //     return NULL;
-
     close(pipe[1]);
     for (read_bytes = read(pipe[0], buf_p, BUFSIZ); read_bytes == BUFSIZ;
         read_bytes = read(pipe[0], buf_p, BUFSIZ)) {
@@ -45,12 +39,12 @@ static char *read_output(pid_t pid, int *pipe) {
     return buf;
 }
 
-char *mx_process_output(char *str, int (*parse_p)(char *, t_ush *),
-                        t_ush *ush) {
+static char *process_output(char *str, int (*parse_p)(char *, t_ush *),
+                            t_ush *ush) {
     pid_t pid;
     int p[2];  // pipe
 
-    signal(SIGTSTP, do_nothing);
+    signal(SIGTSTP, SIG_IGN);
     pipe(p);
     if ((pid = fork()) == -1) {
         perror("fork");
@@ -68,3 +62,22 @@ char *mx_process_output(char *str, int (*parse_p)(char *, t_ush *),
     }
     return read_output(pid, p);
 }
+
+char *mx_get_subst_outputs(char *str, int (*parse_p)(char *, t_ush *),
+                           t_ush *ush) {
+    char **subcommands = {NULL};
+    char *sum_output = NULL;
+
+    if (mx_semicolon_split(str, ush, &subcommands) == -1) {  // parse errors
+        mx_quit_parse(str, ush, 1, NULL);
+        return NULL;
+    }
+    for (char **s = subcommands; *s; s++) {
+        sum_output = mx_cooljoin(sum_output, process_output(*s,
+                                 mx_parse_exec, ush));
+    }
+    mx_del_strarr(&subcommands);
+    mx_quit_parse(NULL, ush, -1, NULL);
+    return sum_output;
+}
+

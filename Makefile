@@ -26,7 +26,7 @@ all: install
 
 install:
 	# @make -C libmx
-	@clang $(SANFLAG) src/*.c src/parse/*.c libmx/libmx.a -o ush
+	@clang src/*.c src/parse/*.c libmx/libmx.a -o ush
 	@make clean
 
 # $(LBMXS):

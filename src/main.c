@@ -32,7 +32,7 @@ static void start_loop(t_ush *ush) {
         if (line != NULL && mx_strlen(line) > 0) {
             push_f(&ush->hist, line);
             mx_parse(line, ush);
-             // system("leaks -q ush");
+            // system("leaks -q ush");
         }
         tcsetattr(0, TCSAFLUSH, &savetty);
         if (ush->exit >= 0)

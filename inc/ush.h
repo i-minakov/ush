@@ -185,8 +185,13 @@ void mx_mark_slash_dbl_single_quote(char *s, t_frmt_lst **arr);
 void mx_mark_semicolon(char *s, t_frmt_lst **arr);
 void mx_mark_chars(char *s, t_frmt_lst **arr);
 char *mx_clear_str(char *str);
-char *mx_process_output(char *str, int (*parse_p)(char *, t_ush *),
-                        t_ush *ush);
+void mx_quit_parse(char *line, t_ush *ush, int ret_val, 
+                       t_frmt_lst **arr );
+int mx_parse_exec(char *subline, t_ush *ush);
+int mx_semicolon_split(char *line, t_ush *ush, char ***subcommands);
+void mx_create_outer_subst_n_dblq_list(char *s, t_frmt_lst **arr);
+char *mx_get_subst_outputs(char *str, int (*parse_p)(char *, t_ush *),
+                           t_ush *ush);
 t_range *mx_is_inside_of(int i, enum e_quote type, t_frmt_lst **arr);
 int mx_handle_substitutions(char **str, t_frmt_lst **arr, t_ush *ush);
 //-----------------------------------------------------------------------------

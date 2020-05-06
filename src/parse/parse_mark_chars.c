@@ -44,7 +44,7 @@ void mx_mark_chars(char *s, t_frmt_lst **arr) {
         *s = M_SKP;
 }
 
-char *mx_clear_str(char *str) {  // !!!
+char *mx_clear_str(char *str) {
     int new_p = 0;
     char *new = calloc(1, strlen(str) + 1);
 
