@@ -35,24 +35,6 @@ d:
 e:
 	@clang $(CFLAGS) $(SANFLAG) libmx/libmx.a src/echo_bin/echo_bin.c src/mx_getopt1.c -o echo --debug
 
-# $(LBMXS):
-# 	@make -sC $(LBMXD)
-
-# $(LIBMX): $(LBMXS)
-# 	@make -sC $(LBMXD)
-	
-# $(NAME): $(OBJS) $(LIBMX)
-# 	@$(CC) $(CFLAGS) $(LBMXS) $(OBJS) -o $@
-# 	@printf "\x1b[32;1m$@ created\x1b[0m\n"
-
-# $(OBJD)/%.o: $(SRCD)/%.c $(INCS)
-# 	@$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDE)
-# 	@printf "\x1b[32mcompiled: \x1b[0m[$(<:$(SRCD)/%.c=%.c)]\n"
-
-# $(OBJS): | $(OBJD)
-
-# $(OBJD):
-# 	@mkdir -p $@
 
 uninstall: clean
 	@make -sC $(LBMXD) $@
