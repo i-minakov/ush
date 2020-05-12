@@ -1,6 +1,8 @@
 #include "../inc/ush.h"
 
 int builtin(char **args, t_ush *ush) {
+    if (!strcmp(args[0], "echo"))
+        return mx_ush_echo(args);
     if (!strcmp(args[0], "cd"))
         return ush_cd(args);
     if (!strcmp(args[0], "pwd"))

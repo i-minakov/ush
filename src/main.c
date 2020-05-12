@@ -21,9 +21,10 @@ static void start_loop(t_ush *ush) {
     signal(SIGINT, handel);
     signal(SIGTSTP, handel);
     while (YARIK_PEREPISIVAYET_LS) {
+        // setvbuf(stdout, NULL, _IONBF, 0);
         tcgetattr(0, &tty);
         savetty = tty; 
-        tty.c_lflag &= ~(ICANON|ECHO);
+        tty.c_lflag &= ~(ICANON | ECHO);
         tty.c_cc[VMIN] = 1;
         tcsetattr(0, TCSAFLUSH, &tty);
         write(1, "u$h> ", mx_strlen("u$h> "));
@@ -32,7 +33,7 @@ static void start_loop(t_ush *ush) {
         if (line != NULL && mx_strlen(line) > 0) {
             push_f(&ush->hist, line);
             mx_parse(line, ush);
-            system("leaks -q ush");
+            // system("leaks -q ush");
         }
         tcsetattr(0, TCSAFLUSH, &savetty);
         if (ush->exit >= 0)
@@ -52,7 +53,7 @@ static void pipe_call(t_ush *ush) {
         buf = 0;
     }
     mx_parse(line, ush);
-    system("leaks -q ush");
+    // system("leaks -q ush");
 }
 
 static void set_shell_lvl_up(void) {
@@ -69,8 +70,8 @@ int main(void) {
     int ex = 0;
     t_ush *ush = (t_ush *)calloc(6, sizeof(t_ush));
     ush->jobs = mx_create_job(NULL, -1, -1, NULL);
-    set_shell_lvl_up();
 
+    set_shell_lvl_up();
     ush->exit = -1;
     if (isatty(0)) {
         start_loop(ush);

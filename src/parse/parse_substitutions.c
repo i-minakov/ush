@@ -46,7 +46,7 @@ int mx_handle_substitutions(char **str, t_frmt_lst **arr, t_ush *ush) {
         replace = mx_get_subst_replace_str(str, lst, ush);
         if ((*str)[lst->data->start] == '`'
             || (*str)[lst->data->start + 1] == '(') {
-            process_out = mx_get_subst_outputs(replace, mx_parse_exec, ush);
+            process_out = mx_get_subst_outputs(replace, ush);
             if (!process_out)
                 return -1;
             free(replace);

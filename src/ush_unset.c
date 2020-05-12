@@ -11,7 +11,7 @@ static void uns_var(t_list **env_set, int count, t_list **b) {
             *env_set = front;
         }
         else
-            mx_pop_front(env_set);
+            mx_pop_frontf(env_set);
         return ;
     }
     for (int i = 0; i < count - 1; i++)

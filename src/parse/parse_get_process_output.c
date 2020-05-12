@@ -1,15 +1,15 @@
 #include "../../inc/ush.h"
 
-static bool check_if_exited(pid_t pid, char *buf) {
-    int status;
+// static bool check_if_exited(pid_t pid, char *buf) {
+//     int status;
 
-    waitpid(pid, &status, WUNTRACED);
-    if (WIFEXITED(status)) {
-        free(buf);
-        return 1;
-    }
-    return 0;
-}
+//     waitpid(pid, &status, WUNTRACED);
+//     if (WIFEXITED(status)) {
+//         free(buf);
+//         return 1;
+//     }
+//     return 0;
+// }
 
 static void end_reading(pid_t pid, int *pipe) {
     int status;
@@ -46,6 +46,8 @@ static char *process_output(char *str, int (*parse_p)(char *, t_ush *),
 
     signal(SIGTSTP, SIG_IGN);
     pipe(p);
+    // setvbuf(stdin, NULL, _IONBF, 0);
+
     if ((pid = fork()) == -1) {
         perror("fork");
         return NULL;
@@ -54,6 +56,7 @@ static char *process_output(char *str, int (*parse_p)(char *, t_ush *),
         close(p[0]);
         dup2(p[1], 1);
         close(p[1]);
+        // setvbuf(stdout, NULL, _IONBF, 0);
         if (parse_p(str, ush) == -1) {
             fprintf(stderr, MX_ERR_PARSE_CMDSBN);
             exit(1);
@@ -63,8 +66,7 @@ static char *process_output(char *str, int (*parse_p)(char *, t_ush *),
     return read_output(pid, p);
 }
 
-char *mx_get_subst_outputs(char *str, int (*parse_p)(char *, t_ush *),
-                           t_ush *ush) {
+char *mx_get_subst_outputs(char *str, t_ush *ush) {
     char **subcommands = {NULL};
     char *sum_output = NULL;
 

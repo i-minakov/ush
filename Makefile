@@ -18,7 +18,7 @@ INCS = $(addprefix $(INCD)/, $(INC))
 SRCS = $(addprefix $(SRCD)/, $(SRC))
 OBJS = $(addprefix $(OBJD)/, $(SRC:%.c=%.o))
 	
-CFLAGS = -std=c11 -g $(addprefix -W, all extra error pedantic)
+CFLAGS = -std=c11 $(addprefix -W, all extra error pedantic)
 CC = clang
 # SANFLAG = -g -fsanitize=address
 
@@ -26,8 +26,14 @@ all: install
 
 install:
 	# @make -C libmx
-	@clang $(SANFLAG) src/*.c src/parse/*.c libmx/libmx.a -o ush
+	@clang $(CFLAGS) $(SANFLAG) src/*.c src/parse/*.c libmx/libmx.a -o ush
 	@make clean
+
+d:
+	@clang $(CFLAGS) $(SANFLAG) src/*.c src/parse/*.c libmx/libmx.a  -o ush --debug
+	@make clean
+e:
+	@clang $(CFLAGS) $(SANFLAG) libmx/libmx.a src/echo_bin/echo_bin.c src/mx_getopt1.c -o echo --debug
 
 # $(LBMXS):
 # 	@make -sC $(LBMXD)
@@ -60,6 +66,3 @@ clean:
 
 reinstall: uninstall install
 
-d:
-	@clang  libmx/libmx.a src/*.c src/parse/*.c -o ush --debug
-	@make clean

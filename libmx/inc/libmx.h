@@ -61,6 +61,11 @@ typedef struct s_read_bytes {
     char *buffer;
 } t_read_bytes;
 
+struct s_opt {
+    char c;
+    int optind;
+};
+
 char *mx_delit_fre(char *src, char *d);
 void mx_printchar(char c);
 void mx_print_unicode(wchar_t c);
@@ -138,4 +143,4 @@ void mx_pop_back(t_list **head);
 int mx_list_size(t_list *list);
 t_list *mx_sort_list(t_list *lst, bool (*cmp)(void *, void *));
 void mx_clear_list(t_list **head);
-
+char mx_getopt(int argc, char **argv, char *optstring, int *optind);

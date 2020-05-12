@@ -113,6 +113,9 @@ typedef struct s_ush {
 #define MX_SLASH_SPEC_DBLQ "`$\"\\"
 #define MX_SLASH_SPEC "`$\"\\ '(){};~"
 
+#define MX_ECHO_ESC_SPEC_CHAR "\a\b\x04\x1b\f\n\r\t\v\\"
+#define MX_ECHO_LITERAL_SPEC_CHAR "abcefnrtv\\"
+
 #define MX_ERR_PARSE_UNMATCH "ush: parse error: unmatched "
 #define MX_ERR_PARSE_CMDSBN "ush: parse error in command substitution\n"
 #define MX_ERR_PARSE_BADSBN "ush: bad substitution\n"
@@ -156,6 +159,13 @@ enum e_spec_ch_mark {
     NUM_MC = 4
 };
 
+enum e_echo_flags {
+    ECHO_NONL,
+    ECHO_SPEC,
+    ECHO_NOSPEC,
+    NUM_ECHO_FLAGS
+};
+
 typedef struct s_quotes_params_data {
     int start;
     int end;
@@ -191,14 +201,16 @@ void mx_quit_parse(char *line, t_ush *ush, int ret_val,
 int mx_parse_exec(char *subline, t_ush *ush);
 int mx_semicolon_split(char *line, t_ush *ush, char ***subcommands);
 void mx_create_outer_subst_n_dblq_list(char *s, t_frmt_lst **arr);
-char *mx_get_subst_outputs(char *str, int (*parse_p)(char *, t_ush *),
-                           t_ush *ush);
+char *mx_get_subst_outputs(char *str, t_ush *ush);
 t_range *mx_is_inside_of(int i, enum e_quote type, t_frmt_lst **arr);
 int mx_handle_substitutions(char **str, t_frmt_lst **arr, t_ush *ush);
 int mx_tilde_expansion(char **argv);
+int mx_ush_echo(char **argv);
+char mx_getopt1(int argc, char **argv, char *optstring, int *optind);
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-
+void mx_push_backdup(t_list **list, void *data);
+void mx_pop_frontf(t_list **head);
 void add_job(t_jobs **j, char **args, pid_t pid);
 t_jobs *mx_create_job(char **data, int num, pid_t pid, char *pwd);
 char **copy_dub_arr(char **args);

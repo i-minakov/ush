@@ -12,7 +12,7 @@ static void tilde2(char **str, char ***arr) {
     mx_del_strarr(arr);
 }
 
-static void no_such_user(char **str, char *tmp, char ***m) {
+static void no_such_user(char *tmp, char ***m) {
     fprintf(stderr, MX_ERR_PARSE_NO_SUCH_USER "%s\n", tmp);
     mx_del_strarr(m);
     free(tmp);
@@ -28,7 +28,7 @@ static int tilde(char **str) {
         return 0;
     }
     if (!getpwnam((tmp = strndup(*str + 1, strlen(m[0]) - 1)))) {
-        no_such_user(str, tmp, &m);
+        no_such_user(tmp, &m);
         return -1;
     }
     mx_replace_sub_str(str, 0, strlen(tmp),

@@ -72,6 +72,6 @@ void env_in_list(t_list **env_set, char *src) {
             return;
         }
         if (!change_var(env_set, src)) //добавить
-            mx_push_back(env_set, src);
+            mx_push_backdup(env_set, src);
     }
 }
