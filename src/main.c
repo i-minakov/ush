@@ -1,44 +1,25 @@
 #include "../inc/ush.h"
 
-static void handel(int sig) { 
-    pid_t pid = getpid();
-    
-    if (pid == 0 && sig == 2) {
-        write(1, "^C\n", 3);
-        kill(pid, SIGINT);
-    }
-    if (pid == 0 && sig == 20)
-        write(1, "^Z\n", 3);
-} 
-
 static void start_loop(t_ush *ush) {
     char *line = NULL;
-    struct termios savetty;
-    struct termios tty;
     ush->hist = NULL;
     ush->env_set = mx_create_node(NULL);
-
-    signal(SIGINT, handel);
-    signal(SIGTSTP, handel);
+    
     while (YARIK_PEREPISIVAYET_LS) {
-        // setvbuf(stdout, NULL, _IONBF, 0);
-        tcgetattr(0, &tty);
-        savetty = tty; 
-        tty.c_lflag &= ~(ICANON | ECHO);
-        tty.c_cc[VMIN] = 1;
-        tcsetattr(0, TCSAFLUSH, &tty);
+        mx_enable_canon();
         write(1, "u$h> ", mx_strlen("u$h> "));
         line = read_stream(ush->hist);
         write (1, "\n", 1);
         if (line != NULL && mx_strlen(line) > 0) {
             push_f(&ush->hist, line);
+            mx_disable_canon();
             mx_parse(line, ush);
             // system("leaks -q ush");
         }
-        tcsetattr(0, TCSAFLUSH, &savetty);
         if (ush->exit >= 0)
             break ;
     }
+    tcsetattr(0, TCSAFLUSH, &ush->savetty);
     free_list2(&ush->env_set);
 }
 
@@ -74,6 +55,7 @@ int main(void) {
     set_shell_lvl_up();
     ush->exit = -1;
     if (isatty(0)) {
+        mx_setup_term(ush);
         start_loop(ush);
         ex = ush->exit;
         free_list(&ush->hist);

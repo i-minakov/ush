@@ -25,9 +25,11 @@ CC = clang
 all: install
 
 install:
-	# @make -C libmx
+	# @make l
 	@clang $(CFLAGS) $(SANFLAG) src/*.c src/parse/*.c libmx/libmx.a -o ush
 	@make clean
+l:
+	@make reinstall -C libmx
 
 d:
 	@clang $(CFLAGS) $(SANFLAG) src/*.c src/parse/*.c libmx/libmx.a  -o ush --debug

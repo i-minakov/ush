@@ -1,16 +1,5 @@
 #include "../../inc/ush.h"
 
-// static bool check_if_exited(pid_t pid, char *buf) {
-//     int status;
-
-//     waitpid(pid, &status, WUNTRACED);
-//     if (WIFEXITED(status)) {
-//         free(buf);
-//         return 1;
-//     }
-//     return 0;
-// }
-
 static void end_reading(pid_t pid, int *pipe) {
     int status;
     
@@ -20,23 +9,21 @@ static void end_reading(pid_t pid, int *pipe) {
 }
 
 static char *read_output(pid_t pid, int *pipe) {
-    int read_bytes;
-    char *buf = calloc(1, BUFSIZ);
-    char *buf_p = buf;
-    int size = BUFSIZ;
+    int read_bytes = 0;
+    char buf[BUFSIZ + 1] = "";
+    char *tmp = NULL;
+    char *ret = calloc(1, 1);
 
     close(pipe[1]);
-    for (read_bytes = read(pipe[0], buf_p, BUFSIZ); read_bytes == BUFSIZ;
-        read_bytes = read(pipe[0], buf_p, BUFSIZ)) {
-            if (read_bytes == -1) {
-                free(buf);
-                return NULL;
-            }
-        buf = reallocf(buf, (size += BUFSIZ));
-        buf_p = buf + size - BUFSIZ;
+    for (read_bytes = read(pipe[0], buf, BUFSIZ); read_bytes > 0;
+        read_bytes = read(pipe[0], buf, BUFSIZ)) {
+        tmp = mx_strjoin(ret, buf);
+        free(ret);
+        ret = tmp;
+        memset(buf, 0, read_bytes);
     }
     end_reading(pid, pipe);
-    return buf;
+    return ret;
 }
 
 static char *process_output(char *str, int (*parse_p)(char *, t_ush *),
@@ -44,19 +31,18 @@ static char *process_output(char *str, int (*parse_p)(char *, t_ush *),
     pid_t pid;
     int p[2];  // pipe
 
-    signal(SIGTSTP, SIG_IGN);
+    if (!mx_check_parse(str))
+        return NULL;
     pipe(p);
-    // setvbuf(stdin, NULL, _IONBF, 0);
-
     if ((pid = fork()) == -1) {
         perror("fork");
         return NULL;
     }
     if (pid == 0) {
+        setvbuf(stdout, NULL, _IONBF, 0);
         close(p[0]);
         dup2(p[1], 1);
         close(p[1]);
-        // setvbuf(stdout, NULL, _IONBF, 0);
         if (parse_p(str, ush) == -1) {
             fprintf(stderr, MX_ERR_PARSE_CMDSBN);
             exit(1);

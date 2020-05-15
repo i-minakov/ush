@@ -107,14 +107,17 @@ typedef struct s_ush {
     struct s_jobs *jobs;
     struct s_list *env_set;
     struct s_history *hist;
+    struct termios savetty;
 }              t_ush;
+
+// #define MX_DEBUG(x) #ifdef DEBUG x #endif
 
 #define MX_FUNC_SYMBOLS "\"\'$`(){}\\;"
 #define MX_SLASH_SPEC_DBLQ "`$\"\\"
 #define MX_SLASH_SPEC "`$\"\\ '(){};~"
 
-#define MX_ECHO_ESC_SPEC_CHAR "\a\b\x04\x1b\f\n\r\t\v\\"
-#define MX_ECHO_LITERAL_SPEC_CHAR "abcefnrtv\\"
+#define MX_ECHO_ESC_SPEC_CHAR "\a\b\x1b\f\n\r\t\v\\"
+#define MX_ECHO_LITERAL_SPEC_CHAR "abefnrtv\\"
 
 #define MX_ERR_PARSE_UNMATCH "ush: parse error: unmatched "
 #define MX_ERR_PARSE_CMDSBN "ush: parse error in command substitution\n"
@@ -197,7 +200,7 @@ void mx_mark_semicolon(char *s, t_frmt_lst **arr);
 void mx_mark_chars(char *s, t_frmt_lst **arr);
 char *mx_clear_str(char *str);
 void mx_quit_parse(char *line, t_ush *ush, int ret_val, 
-                       t_frmt_lst **arr );
+                   t_frmt_lst **arr );
 int mx_parse_exec(char *subline, t_ush *ush);
 int mx_semicolon_split(char *line, t_ush *ush, char ***subcommands);
 void mx_create_outer_subst_n_dblq_list(char *s, t_frmt_lst **arr);
@@ -206,7 +209,14 @@ t_range *mx_is_inside_of(int i, enum e_quote type, t_frmt_lst **arr);
 int mx_handle_substitutions(char **str, t_frmt_lst **arr, t_ush *ush);
 int mx_tilde_expansion(char **argv);
 int mx_ush_echo(char **argv);
-char mx_getopt1(int argc, char **argv, char *optstring, int *optind);
+char mx_getopt(int argc, char **argv, char *optstring, int *optind);
+void mx_enable_canon(void);
+void mx_disable_canon(void);
+struct termios *mx_get_tty(void);
+void mx_init_signals(void);
+void prepare_tty(void);
+bool mx_check_parse(char *str);
+void mx_setup_term(t_ush *ush);
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 void mx_push_backdup(t_list **list, void *data);

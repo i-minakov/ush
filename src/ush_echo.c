@@ -1,16 +1,5 @@
 #include "../inc/ush.h"
 
-static bool replaced_escaped_smbl(char *s) {
-    int ind;
-
-    if ((ind = mx_get_char_index(MX_ECHO_LITERAL_SPEC_CHAR, s[1])) >= 0) {
-        s[0] = MX_ECHO_ESC_SPEC_CHAR[ind];
-        s[1] = M_SKP;
-        return 1;
-    }
-    return 0;
-}
-
 static bool replaced_escaped_hex(char *s) {
     int width = 0;
     char buf[3] = "";
@@ -56,13 +45,43 @@ static bool replaced_escaped_octal(char *s) {
     return 0;
 }
 
-static void replace_special_chars(char **str) {
-    for (char *s = *str; (s = strchr(s, '\\')); s++) {
-        if (replaced_escaped_smbl(s) || replaced_escaped_octal(s)
-            || replaced_escaped_hex(s)) {
-        }
+int replaced_escaped_smbl(char *s) {
+    int ind;
+
+    if (s[1] == 'c') {
+        s[0] = '\0';
+        s[1] = M_SKP;
+        return -1;
     }
-    *str = mx_clear_str(*str);
+    if ((ind = mx_get_char_index(MX_ECHO_LITERAL_SPEC_CHAR, s[1])) >= 0) {
+        s[0] = MX_ECHO_ESC_SPEC_CHAR[ind];
+        s[1] = M_SKP;
+        return 1;
+    }
+    return 0;
+}
+
+static int replace_special_chars(char **str, bool *flags) {
+    int result = 0;
+    char *tmp = NULL;
+
+    if (!flags[ECHO_NOSPEC] || flags[ECHO_SPEC]) {
+        for (char *s = *str; (s = strchr(s, '\\')); s++) {
+            if ((result = replaced_escaped_smbl(s))
+                || (result = replaced_escaped_octal(s))
+                || (result = replaced_escaped_hex(s))) {
+                if (result == -1) {
+                    tmp = *str;
+                    *str = strdup(*str);
+                    free(tmp);
+                    break;
+                }
+            }
+        }
+        *str = mx_clear_str(*str);
+    }
+    printf(*(str + 1) ? "%s " : "%s", *str);
+    return result;
 }
 
 int mx_ush_echo(char **argv) {
@@ -73,15 +92,12 @@ int mx_ush_echo(char **argv) {
     
     while (argv[argc])
         argc++;
-    while ((optchar = mx_getopt1(argc, argv, "neE", &optind)) != -1
+    while ((optchar = mx_getopt(argc, argv, "neE", &optind)) != -1
            && optchar != '?')
         flags[mx_get_char_index("neE", optchar)] = 1;
-    if (!flags[ECHO_NOSPEC] || flags[ECHO_SPEC])
-        for (char **p = argv + optind; *p; p++)
-            replace_special_chars(p);
-    for (argv += optind; *argv; argv++) {
-        printf("%s", *argv);
-        printf(*(argv + 1) ? " " : "");
+    for (char **p = argv + optind; *p; p++) {
+        if (replace_special_chars(p, flags) == -1)
+            return 0;
     }
     if (!flags[ECHO_NONL])
         printf("\n");

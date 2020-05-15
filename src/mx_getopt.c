@@ -1,22 +1,23 @@
-#include "../inc/libmx.h"
+#include "../inc/ush.h"
 
 static char optchar(char *optstring, bool *wordbeg, char **c) {
     if (*wordbeg) {
-        if (**c != '-')
+        if (**c != '-') {
+            *c = NULL;
+            *wordbeg = 1;
             return -1;
-        else if (!*(++(*c)))  // "-" word
+        }
+        else if (!*(++(*c))) {
+            *c = NULL;
+            *wordbeg = 1;
             return -1;
-        // else if (**c == '-' && !*(*c + 1)) {  // "--" word
-        //     (*optind)++;
-        //     return -1;
-        // }
+        }
         else
             *wordbeg = 0;
     }
     if (mx_get_char_index(optstring, **c) == -1) {
-        // mx_printerror("uls: illegal option -- ");
-        // write(2, *c, 1);
-        // mx_printerror("\n");
+        *c = NULL;
+        *wordbeg = 1;
         return '?';
     }
     return **c;
@@ -30,8 +31,11 @@ char mx_getopt(int argc, char **argv, char *optstring, int *optind) {
         (*optind)++;
         wordbeg = 1;
     }
-    if (*optind == argc)
+    if (*optind == argc) {
+        c = NULL;
+        wordbeg = 1;
         return -1;
+    }
     if (!c || !*c)
         c = argv[*optind];
     return optchar(optstring, &wordbeg, &c);
