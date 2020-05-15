@@ -1,4 +1,4 @@
-#include "../../inc/ush.h"
+#include "../inc/ush.h"
 
 void mx_quit_parse(char *line, t_ush *ush, int ret_val, 
                        t_frmt_lst **arr ) {

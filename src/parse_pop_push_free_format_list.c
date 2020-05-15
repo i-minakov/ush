@@ -1,4 +1,4 @@
-#include "../../inc/ush.h"
+#include "../inc/ush.h"
 
 void mx_pop_format(t_frmt_lst **del) {
     if (!del || !*del)

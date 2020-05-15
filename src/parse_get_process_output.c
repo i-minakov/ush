@@ -1,4 +1,4 @@
-#include "../../inc/ush.h"
+#include "../inc/ush.h"
 
 static void end_reading(pid_t pid, int *pipe) {
     int status;

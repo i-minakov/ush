@@ -1,4 +1,4 @@
-#include "../../inc/ush.h"
+#include "../inc/ush.h"
 
 bool mx_check_parse(char *str) {
     t_frmt_lst *arr[NUM_Q] = {NULL};

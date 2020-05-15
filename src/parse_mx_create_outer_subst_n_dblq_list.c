@@ -1,4 +1,4 @@
-#include "../../inc/ush.h"
+#include "../inc/ush.h"
 
 static bool is_outer(int start, t_frmt_lst **arr) {
     t_frmt_lst *p;

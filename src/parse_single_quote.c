@@ -1,4 +1,4 @@
-#include "../../inc/ush.h"
+#include "../inc/ush.h"
 
 static int find_sin_q_pair(char *s, int *i, t_frmt_lst **arr) {
     for (int start = (*i)++; s[*i]; (*i)++) {

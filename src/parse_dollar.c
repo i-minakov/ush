@@ -1,4 +1,4 @@
-#include "../../inc/ush.h"
+#include "../inc/ush.h"
 
 static int brace_pair_cycle(char *s, int *i, int start, t_frmt_lst **arr) {
     for (; s[*i]; (*i)++) {

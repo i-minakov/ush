@@ -1,4 +1,4 @@
-#include "../../inc/ush.h"
+#include "../inc/ush.h"
 
 void mx_replace_sub_str(char **s, int start, int end, char *replace) {
     char *new;

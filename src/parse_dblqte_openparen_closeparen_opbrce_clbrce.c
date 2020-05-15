@@ -1,4 +1,4 @@
-#include "../../inc/ush.h"
+#include "../inc/ush.h"
 
 int mx_check_double_quote(char *s, int *i, t_frmt_lst **arr) {
     if (s[*i] != '\"')

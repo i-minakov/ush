@@ -1,4 +1,4 @@
-#include "../../inc/ush.h"
+#include "../inc/ush.h"
 
 t_range *mx_is_inside_of(int i, enum e_quote type, t_frmt_lst **arr) {
     for (t_frmt_lst *p = arr[type]; p; p = p->next)

@@ -1,4 +1,4 @@
-#include "../../inc/ush.h"
+#include "../inc/ush.h"
 
 static void tilde2(char **str, char ***arr) {
     if (strcmp((*arr)[0], "~+") == 0) {

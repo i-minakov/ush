@@ -1,4 +1,4 @@
-#include "../../inc/ush.h"
+#include "../inc/ush.h"
 
 static void paste_subst(char **str, char *replace, t_range *rep_range,
                             t_frmt_lst **arr) {

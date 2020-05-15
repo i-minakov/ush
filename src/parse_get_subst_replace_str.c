@@ -1,4 +1,4 @@
-#include "../../inc/ush.h"
+#include "../inc/ush.h"
 
 static char *param_dollar_expansion(char **str, t_frmt_lst *list, t_ush *ush) {
     char *replace = NULL;
