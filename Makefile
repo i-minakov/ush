@@ -6,23 +6,6 @@ LIBMX = libmx/libmx.a
 FLAGS = -std=c11 -Wall -Wextra -Werror -Wpedantic
 SANFLAG = -g -fsanitize=address
 
-
-# SRCD = src
-# INCD = inc
-# OBJD = obj
-# LBMXD = libmx
-# LIBMX = libmx
-
-# SRC = *.c parse
-
-# LBMXS = $(addprefix $(LBMXD)/, $(LBMX))
-# INCS = $(addprefix $(INCD)/, $(INC))
-# SRCS = $(addprefix $(SRCD)/, $(SRC))
-# OBJS = $(addprefix $(OBJD)/, $(SRC:%.c=%.o))
-	
-# CFLAGS = -std=c11 $(addprefix -W, all extra error pedantic)
-# CC = clang
-
 all: $(NAME)
 
 install: $(NAME)
@@ -55,13 +38,6 @@ uninstall: clean
 	@rm -rf $(NAME)
 
 reinstall: uninstall install
-
-# install:
-# 	# @make l
-# 	@clang $(CFLAGS) $(SANFLAG) src/*.c src/parse/*.c libmx/libmx.a -o ush
-# 	@make clean
-l:
-	@make -C libmx
 
 d:
 	@clang $(FLAGS) $(SANFLAG) src/*.c libmx/libmx.a -o ush --debug
