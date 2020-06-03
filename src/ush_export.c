@@ -62,12 +62,12 @@ static void ch_env (char *a, char *b) {
     mx_strdel(&d);
 }
 
-int ush_export(char **args, t_list **env_set) {
+int mx_ush_export(char **args, t_list **env_set) {
     char *var = NULL;
 
     if (args[1] == NULL)
-        return env_print();
-    env_in_list(env_set, args[1]); // дополнние сета експортом
+        return mx_env_print();
+    mx_env_in_list(env_set, args[1]); // дополнние сета експортом
     for (int i = 1; args[i]; i++) {
         var = check(args[i], *env_set);
         if (mx_strcmp_null(var, "\n") != 0)

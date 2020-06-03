@@ -6,7 +6,7 @@ static void uns_var(t_list **env_set, int count, t_list **b) {
 
     if (count == 0) {
         if (front->next == NULL) {
-            free_list2(env_set);
+            mx_free_list2(env_set);
             front = mx_create_node(NULL);
             *env_set = front;
         }
@@ -18,7 +18,7 @@ static void uns_var(t_list **env_set, int count, t_list **b) {
         front = front->next;
     front->next = back->next;
     back->next = NULL;
-    free_list2(&back);
+    mx_free_list2(&back);
 }
 
 static bool coi(t_list **env, t_list **n, int count, char **tmp) {
@@ -36,7 +36,7 @@ static bool coi(t_list **env, t_list **n, int count, char **tmp) {
     return false;
 }
 
-int ush_unset(char **args, t_list **env_set) {
+int mx_ush_unset(char **args, t_list **env_set) {
     char **tmp = NULL;
     int count;
     t_list *f = *env_set;

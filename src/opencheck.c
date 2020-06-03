@@ -1,6 +1,6 @@
 #include "../inc/ush.h"
 
-bool opencheck(char *dirname, t_cd *in) {
+bool mx_opencheck(char *dirname, t_cd *in) {
     DIR *dirdir;
     struct stat i;
 

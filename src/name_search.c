@@ -1,6 +1,6 @@
 #include "../inc/ush.h"
 
-int name_search(char *tmp , t_jobs *jobs) {
+int mx_name_search(char *tmp , t_jobs *jobs) {
     int res = -1;
     int count = 0;
     t_jobs *j = jobs;

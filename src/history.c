@@ -9,7 +9,7 @@ static t_hst *create_h(char *data) {
     return h;
 }
 
-void push_f(t_hst **hs, char *data) {
+void mx_push_f(t_hst **hs, char *data) {
     t_hst *p = *hs;
     
     if (p == NULL)

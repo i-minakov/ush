@@ -21,11 +21,11 @@ static void to_body(t_jobs **j, char **args, pid_t pid) {
     }
 }
 
-void add_job(t_jobs **j, char **args, pid_t pid) {
+void mx_add_job(t_jobs **j, char **args, pid_t pid) {
     t_jobs *job = *j;
 
     if (job->data == NULL && job->num == -1) { //если пустой
-        job->data = copy_dub_arr(args);
+        job->data = mx_copy_dub_arr(args);
         job->num = 1;
         job->pid = pid;
         job->pwd = mx_strdup(getenv("PWD"));

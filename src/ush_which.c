@@ -36,7 +36,7 @@ static int built_check(char *args) {
     return 1;
 }
 
-int ush_which(char **args) {
+int mx_ush_which(char **args) {
     int f = 1;
     int flag = 0;
     

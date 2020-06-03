@@ -1,6 +1,6 @@
 #include "../inc/ush.h"
 
-int ush_pwd(char **args) {
+int mx_ush_pwd(char **args) {
     char t[512];
     char *pwd = getcwd(t, 512);
 

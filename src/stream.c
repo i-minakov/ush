@@ -72,7 +72,7 @@ static char *delete_but(char *line, int *x) {
     return line;
 }
 
-char *stream(int buf, char *line, int *x) {
+char *mx_stream(int buf, char *line, int *x) {
     char *ch = NULL;
 
     ch = (char *)(&buf);

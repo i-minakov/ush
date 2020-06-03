@@ -1,6 +1,6 @@
 #include "../inc/ush.h"
 
-void free_jobs(t_jobs **jobs) {
+void mx_free_jobs(t_jobs **jobs) {
     t_jobs *j = *jobs;
     while(j) {
         t_jobs *hren = j->next;

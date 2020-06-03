@@ -37,14 +37,14 @@ static char *button(t_hst **hs, char *line, int buf, int *x) {
     return line;
 }
 
-char *read_stream(t_hst *h) {
+char *mx_read_stream(t_hst *h) {
     unsigned int buf = 0;
     char *line = NULL;
     int len = 0;
     int x = 0;
     t_hst *head = NULL;
     
-    push_f(&h, "\0"); 
+    mx_push_f(&h, "\0"); 
     head = h; 
     while ((len = read(0, &buf, 4)) > 0) {
         if (len == 1) {
@@ -54,12 +54,12 @@ char *read_stream(t_hst *h) {
                 buf == 12 ? line = mx_strdup("clear") : 0;
                 break ;
             }
-            line = stream(buf, line, &x);
+            line = mx_stream(buf, line, &x);
         }
         if (len > 1) 
             line = button(&h, line, buf, &x);
         buf = 0;
     }
-    free_node(head);
+    mx_free_node(head);
     return line;
 }

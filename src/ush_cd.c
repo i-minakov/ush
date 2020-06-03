@@ -64,7 +64,7 @@ char *prosto_path(char *newpwd, char *m, t_cd *in) {
         newpwd = mx_delit_fre(newpwd, "/");
     newpwd = mx_delit_fre(newpwd, m);
     // printf("%s\n", newpwd);
-    if (!opencheck(newpwd, in)) {
+    if (!mx_opencheck(newpwd, in)) {
         free(newpwd);
         return NULL;
     }
@@ -116,7 +116,7 @@ int tak_syak(char **args, char *pwd, t_cd *in) {
     return 0;
 }
 
-int ush_cd(char **args) {
+int mx_ush_cd(char **args) {
     char *pwd = mx_strdup(getenv("PWD"));
     char **m = NULL;
     char *newpwd = NULL;

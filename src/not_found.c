@@ -1,6 +1,6 @@
 #include "../inc/ush.h"
 
-int not_found(char *args, char *str) {
+int mx_not_found(char *args, char *str) {
     //fg: job not found: fsh
     write(2, str, mx_strlen(str));
     write(2, " not found: ", 12);

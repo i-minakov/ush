@@ -8,10 +8,10 @@ static void start_loop(t_ush *ush) {
     while (YARIK_PEREPISIVAYET_LS) {
         mx_enable_canon();
         write(1, "u$h> ", mx_strlen("u$h> "));
-        line = read_stream(ush->hist);
+        line = mx_read_stream(ush->hist);
         write (1, "\n", 1);
         if (line != NULL && mx_strlen(line) > 0) {
-            push_f(&ush->hist, line);
+            mx_push_f(&ush->hist, line);
             mx_disable_canon();
             mx_parse(line, ush);
             system("leaks -q ush");
@@ -20,7 +20,7 @@ static void start_loop(t_ush *ush) {
             break ;
     }
     tcsetattr(0, TCSAFLUSH, &ush->savetty);
-    free_list2(&ush->env_set);
+    mx_free_list2(&ush->env_set);
 }
 
 static void pipe_call(t_ush *ush) {
@@ -58,12 +58,12 @@ int main(void) {
         mx_setup_term(ush);
         start_loop(ush);
         ex = ush->exit;
-        free_list(&ush->hist);
+        mx_free_list(&ush->hist);
         exit(ex);
     }
     else
         pipe_call(ush);
-    free_jobs(&ush->jobs);
+    mx_free_jobs(&ush->jobs);
     free(ush);
     return 0;
 }

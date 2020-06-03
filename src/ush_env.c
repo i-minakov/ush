@@ -23,7 +23,7 @@ static int usage(int f, char *arg) {
         write(2, "': No such file or directory\n", 29);
         exit(0);
     }
-	return 1;
+    return 1;
 }
 
 static void e_work(char ***environ, t_env *env) {
@@ -62,7 +62,7 @@ static int check_args(char ***args, t_env *env, char ***environ) {
     return 0;
 }
 
-int ush_env(char **args, t_jobs **jobs) {
+int mx_ush_env(char **args, t_jobs **jobs) {
     extern char **environ;
     t_env *env = (t_env *)malloc(7 * sizeof(t_env));
     int status = 0;
@@ -77,7 +77,7 @@ int ush_env(char **args, t_jobs **jobs) {
     else for ( ; *args && mx_get_char_index(*args, '=') > -1; args++)
         putenv(*args);
     if (*args)
-        status = straus_proc(args, jobs);
+        status = mx_straus_proc(args, jobs);
     else for (int i = 0; environ[i]; i++)
         printf("%s\n", environ[i]);
     e_work(&environ, env);

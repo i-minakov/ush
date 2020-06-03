@@ -24,7 +24,7 @@ int mx_parse_exec(char *subline, t_ush *ush) {
     subline = mx_clear_str(subline);
     argv = mx_strsplit(subline, M_DEL);
     mx_quit_parse(subline, ush, mx_tilde_expansion(argv) == -1 ?
-        1 : detect_builds(argv, ush), arr);
+        1 : mx_detect_builds(argv, ush), arr);
     mx_del_strarr(&argv);
     return 0;
 }

@@ -13,7 +13,7 @@ void reload(pid_t pid, char **args, t_jobs **jobs) {
         wait = waitpid(tmp, &status, WUNTRACED);
         while (!WIFEXITED(status) && !WIFSIGNALED(status)) {
             if (WIFSTOPPED(status)) {
-                add_job(jobs, args, pid);
+                mx_add_job(jobs, args, pid);
                 break;
             }
             wait = waitpid(tmp, &status, WUNTRACED);
@@ -29,11 +29,10 @@ static void del_body(t_jobs **jobs) {
     j->next = NULL;
     j->next = del->next;
     del->next = NULL;
-    free_jobs(&del);
+    mx_free_jobs(&del);
 }
 
-
-void del_job(t_jobs **jobs, int flag) {
+void mx_del_job(t_jobs **jobs, int flag) {
     t_jobs *j = *jobs;
     t_jobs *del = j->next;
     
@@ -50,7 +49,7 @@ void del_job(t_jobs **jobs, int flag) {
             return ;
         }
         j->next = NULL;
-        free_jobs(&j);
+        mx_free_jobs(&j);
         *jobs = del;
     }
     if (flag == 2) { //тело

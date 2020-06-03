@@ -63,7 +63,7 @@ static bool var_check(char *src) {
     return true;
 }
 
-void env_in_list(t_list **env_set, char *src) {
+void mx_env_in_list(t_list **env_set, char *src) {
     t_list *tmp = *env_set;
 
     if (var_check(src)) {

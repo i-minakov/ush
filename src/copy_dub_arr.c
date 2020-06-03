@@ -1,6 +1,6 @@
 #include "../inc/ush.h"
 
-char **copy_dub_arr(char **args) {
+char **mx_copy_dub_arr(char **args) {
     int count = 0;
     char **res = NULL;
 

@@ -66,9 +66,9 @@ static int ch_job(char **args, t_jobs *jobs, int i, char *flags) {
     if ((flags == NULL && args[1] != NULL) || (flags != NULL && args[2] != NULL)) { // если не нул
         write(1, "+++++\n", 6);
         for ( ; args[i]; i++) {
-            ind = name_search(args[i], jobs);
+            ind = mx_name_search(args[i], jobs);
             if (ind == -1) {
-                not_found(args[i], "jobs: job");
+                mx_not_found(args[i], "jobs: job");
                 return 1;
             }
             print_job(jobs, ind, flags);
@@ -82,7 +82,7 @@ static int ch_job(char **args, t_jobs *jobs, int i, char *flags) {
     return 0;
 }
 
-int ush_jobs(char **args, t_jobs **jobs) {
+int mx_ush_jobs(char **args, t_jobs **jobs) {
     int i = 1;
     char *flags = NULL;
     int res = 1;
