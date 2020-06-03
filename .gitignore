@@ -6,9 +6,9 @@
 *.hh
 *.pdf
 *.a
-*.obj
+*.o
 *.out
-obj/
+*obj
 lab/
 lb/
 .vscode/
@@ -17,3 +17,5 @@ lb/
 1 копія
 copy
 *.zip
+ush
+*.sh

@@ -40,6 +40,8 @@ static int tilde(char **str) {
 }
 
 int mx_tilde_expansion(char **argv) {
+    if (!argv || !*argv)
+        return 0;
     for (char **s = argv + 1; *s; s++) {
         if (**s != '~')
             continue;

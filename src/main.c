@@ -28,12 +28,14 @@ static void pipe_call(t_ush *ush) {
     char *line = NULL;
     char *ch = NULL;
 
+    ush->env_set = mx_create_node(NULL);
     while (read(STDIN_FILENO, &buf, 3) > 0) {
         ch = (char *)(&buf);
         line = mx_delit_fre(line, ch);
         buf = 0;
     }
     mx_parse(line, ush);
+    mx_free_list2(&ush->env_set);
     // system("leaks -q ush");
 }
 
