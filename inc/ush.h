@@ -31,6 +31,9 @@
 
 #define YARIK_PEREPISIVAYET_LS 228
 
+#define ORACLE_HACK
+
+
 typedef struct s_jobs {
     int num;
     pid_t pid;
