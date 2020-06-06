@@ -7,7 +7,6 @@ static bool change_var(t_list **env_set, char *src) {
 
     if ((mx_get_char_index(src, '=') < 0))
         return true;
-
     t_var = mx_strsplit(src, '=');
     for( ; tmp; tmp = tmp->next) { //заменить
         if (mx_get_substr_index(tmp->data, t_var[0]) >= 0) {
@@ -28,20 +27,20 @@ static bool change_var(t_list **env_set, char *src) {
 
 static bool f_case(char ***v) {
     char **var = *v;
-    write(1, "export: not valid in this context: ", 
+    write(2, "export: not valid in this context: ", 
         mx_strlen("export: not valid in this context: "));
-    write(1, var[0], mx_strlen(var[0]));
-    write(1, "\n", 1);
+    write(2, var[0], mx_strlen(var[0]));
+    write(2, "\n", 1);
     mx_del_strarr(v);
     return false;
 }
 
 static bool s_case(char ***v) {
     char **var = *v;
-    write(1, "export: not an identifier: ", 
+    write(2, "export: not an identifier: ", 
         mx_strlen("export: not an identifier: "));
-    write(1, var[0], mx_strlen(var[0]));
-    write(1, "\n", 1);
+    write(2, var[0], mx_strlen(var[0]));
+    write(2, "\n", 1);
     mx_del_strarr(v);
     return false;
 }

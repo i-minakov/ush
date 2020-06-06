@@ -197,7 +197,7 @@ char *mx_strpart(char *str, int index);
 char *mx_stream(int buf, char *line, int *x);
 void mx_free_node(t_hst *node);
 int mx_detect_builds(char **args, t_ush *ush);
-
+void mx_signal_ignore();
 int mx_detect_exp(char **proc, t_hst *start_h, t_list **env_set);
 void mx_env_in_list(t_list **env_set, char *src);
 int mx_ush_export(char **args, t_list **env_set);

@@ -67,8 +67,9 @@ int mx_ush_export(char **args, t_list **env_set) {
 
     if (args[1] == NULL)
         return mx_env_print();
-    mx_env_in_list(env_set, args[1]); // дополнние сета експортом
+     // дополнние сета експортом
     for (int i = 1; args[i]; i++) {
+        mx_env_in_list(env_set, args[i]);
         var = check(args[i], *env_set);
         if (mx_strcmp_null(var, "\n") != 0)
             ch_env (args[i], var);

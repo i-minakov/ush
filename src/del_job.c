@@ -1,44 +1,44 @@
 #include "../inc/ush.h"
 
-void reload(pid_t pid, char **args, t_jobs **jobs) {
+static void reload(pid_t pid, char **args, t_jobs **jobs) {
     int status;
-    pid_t tmp;
-    pid_t wait;
-    
-    tmp = fork();
-    if (tmp == 0) {
-        kill(pid, SIGCONT);
+
+    tcsetpgrp(0, pid);
+    tcsetpgrp(1, pid);
+    kill(pid, SIGCONT);
+    waitpid(pid, &status, WUNTRACED);
+    tcsetpgrp(0, getpid());
+    tcsetpgrp(1, getpid());
+    if (WIFSTOPPED(status)) {
+        // mx_del_strarr(&args);
+        mx_add_job(jobs, args, pid);
     }
-    else {
-        wait = waitpid(tmp, &status, WUNTRACED);
-        while (!WIFEXITED(status) && !WIFSIGNALED(status)) {
-            if (WIFSTOPPED(status)) {
-                mx_add_job(jobs, args, pid);
-                break;
-            }
-            wait = waitpid(tmp, &status, WUNTRACED);
-        }
-    }
+    if (args != NULL)
+        mx_del_strarr(&args);
+    errno = 0;
 }
 
 static void del_body(t_jobs **jobs) {
     t_jobs *j = *jobs;
     t_jobs *del = j->next;
+    char **data = mx_copy_dub_arr(del->data);
     
-    reload(del->pid, del->data, jobs);
+    int pid = del->pid;
     j->next = NULL;
     j->next = del->next;
     del->next = NULL;
     mx_free_jobs(&del);
+    reload(pid, data, jobs);
 }
 
 void mx_del_job(t_jobs **jobs, int flag) {
     t_jobs *j = *jobs;
     t_jobs *del = j->next;
+    char **data = NULL;
+    int pid = j->pid;
     
-    if (flag == 1) { //голова
-        //kill(j->pid, SIGCONT);
-        reload(j->pid, j->data, jobs);
+    if (flag == 1) {
+        data = mx_copy_dub_arr(j->data);
         if (j->next == NULL) { //когда один остается
             if (j->data != NULL) 
                 mx_del_strarr(&j->data);
@@ -46,11 +46,14 @@ void mx_del_job(t_jobs **jobs, int flag) {
             j->data = NULL;
             j->num = -1;
             j->pid = -1;
-            return ;
+            reload(pid, data, &j);
         }
-        j->next = NULL;
-        mx_free_jobs(&j);
-        *jobs = del;
+        else {
+            j->next = NULL;
+            mx_free_jobs(&j);
+            *jobs = del;
+            reload(pid, data, jobs);
+        }
     }
     if (flag == 2) { //тело
         del_body(jobs);

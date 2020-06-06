@@ -52,7 +52,7 @@ int mx_ush_which(char **args) {
             f = check_access(*args, flag);
             if (f == 1) {
                 mx_printstr(*args);
-                write(1, " not found\n", 11);
+                write(2, " not found\n", 11);
             }
         }
     }

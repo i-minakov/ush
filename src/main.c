@@ -5,6 +5,7 @@ static void start_loop(t_ush *ush) {
     ush->hist = NULL;
     ush->env_set = mx_create_node(NULL);
 
+    mx_signal_ignore();
     while (YARIK_PEREPISIVAYET_LS) {
         mx_enable_canon();
         write(1, "u$h> ", mx_strlen("u$h> "));
@@ -14,7 +15,7 @@ static void start_loop(t_ush *ush) {
             mx_push_f(&ush->hist, line);
             mx_disable_canon();
             mx_parse(line, ush);
-            system("leaks -q ush");
+            // system("leaks -q ush");
         }
         if (ush->exit >= 0)
             break ;

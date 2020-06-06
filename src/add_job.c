@@ -24,6 +24,8 @@ static void to_body(t_jobs **j, char **args, pid_t pid) {
 void mx_add_job(t_jobs **j, char **args, pid_t pid) {
     t_jobs *job = *j;
 
+    // if (isatty(0))
+    //     printf("\nush: suspended %s\n", args[0]);
     if (job->data == NULL && job->num == -1) { //если пустой
         job->data = mx_copy_dub_arr(args);
         job->num = 1;
