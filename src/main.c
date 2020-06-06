@@ -14,7 +14,7 @@ static void start_loop(t_ush *ush) {
             mx_push_f(&ush->hist, line);
             mx_disable_canon();
             mx_parse(line, ush);
-            system("leaks -q ush");
+            // system("leaks -q ush");
         }
         if (ush->exit >= 0)
             break ;

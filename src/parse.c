@@ -45,6 +45,9 @@ int mx_semicolon_split(char *line, t_ush *ush, char ***subcommands) {
 int mx_parse(char *line, t_ush *ush) {
     char **subcommands = {NULL};
 
+    #ifdef ORACLE_HACK
+        printf("INPUT START\n%s\nINPUT END\n", line);
+    #endif
     if (mx_semicolon_split(line, ush, &subcommands) == -1) {  // parse errors
         return -1;
     }
