@@ -6,23 +6,7 @@ static void signal_reload() {
     signal(SIGTTIN, SIG_DFL);
 }
 
-int mx_straus_proc(char **args, t_jobs **jobs) {
-    pid_t pid;
-    int status = 0;
-
-        
-    pid = fork();
-    if (pid == 0) {
-        setpgid(pid, pid);
-        signal_reload();
-        tcsetpgrp(0, getpid());
-        tcsetpgrp(1, getpid());
-        execvp(*args, args);
-        mx_not_found(args[0], "ush: command");
-        exit(127);
-    }
-    else 
-        waitpid(pid, &status, WUNTRACED);
+static int wife_check(char **args, t_jobs **jobs, int status, pid_t pid) {
     tcsetpgrp(0, getpid());
     tcsetpgrp(1, getpid());
     if (WIFSTOPPED(status)) {
@@ -37,4 +21,26 @@ int mx_straus_proc(char **args, t_jobs **jobs) {
         status =  WEXITSTATUS(status);
     errno = 0;
     return status;
+}
+
+int mx_straus_proc(char **args, t_jobs **jobs) {
+    pid_t pid;
+    int status = 0;
+
+        
+    pid = fork();
+    if (pid == 0) {
+        setpgid(pid, pid);
+        signal_reload();
+        if (isatty(0)) {
+            tcsetpgrp(0, getpid());
+            tcsetpgrp(1, getpid());
+        }
+        execvp(*args, args);
+        mx_not_found(args[0], "ush: command");
+        exit(127);
+    }
+    else 
+        waitpid(pid, &status, WUNTRACED);
+    return wife_check(args, jobs, status, pid);
 }

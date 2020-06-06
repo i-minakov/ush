@@ -21,10 +21,6 @@ int builtin(char **args, t_ush *ush) {
         return mx_ush_fg(args, &ush->jobs);
     if (!strcmp(args[0], "jobs"))
         return mx_ush_jobs(args, &ush->jobs);
-    if (!strcmp(args[0], "false"))
-        return 1;
-    if (!strcmp(args[0], "true"))
-        return 0;
     return -1;
 }
 
