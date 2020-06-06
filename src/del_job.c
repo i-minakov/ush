@@ -5,8 +5,8 @@ static void reload(pid_t pid, char **args, t_jobs **jobs) {
 
     tcsetpgrp(0, pid);
     tcsetpgrp(1, pid);
-    kill(pid, SIGCONT);
-    waitpid(pid, &status, WUNTRACED);
+    kill(-pid, SIGCONT);
+    waitpid(-pid, &status, WUNTRACED);
     tcsetpgrp(0, getpid());
     tcsetpgrp(1, getpid());
     if (WIFSTOPPED(status)) {

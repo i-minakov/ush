@@ -37,7 +37,23 @@ static char *button(t_hst **hs, char *line, int buf, int *x) {
     return line;
 }
 
-char *mx_read_stream(t_hst *h) {
+static int check(t_ush *ush, int buf, char **l) {
+    char *line = *l;
+
+    if (buf == 10 || buf == 12 || (buf == 4 && 
+        (line == NULL || !strlen(line))) || buf == 3) {
+            if (buf == 3) {
+                line != NULL ? mx_strdel(l) : 0; 
+                ush->last_return = 130;
+            }
+            else if (line != NULL && !strlen(line))
+                mx_strdel(l);
+        return 1;
+    }
+    return 0;
+}
+
+char *mx_read_stream(t_ush *ush, t_hst *h) {
     unsigned int buf = 0;
     char *line = NULL;
     int len = 0;
@@ -48,16 +64,13 @@ char *mx_read_stream(t_hst *h) {
     head = h; 
     while ((len = read(0, &buf, 4)) > 0) {
         if (len == 1) {
-            if (buf == 10 || buf == 12 || (buf == 4 && 
-                (line == NULL || !strlen(line)))) {
+            if (check(ush, buf, &line) == 1) {
                 buf == 4 ? line = mx_strdup("exit") : 0;
-                buf == 12 ? line = mx_strdup("clear") : 0;
-                break ;
+                break;
             }
             line = mx_stream(buf, line, &x);
         }
-        if (len > 1) 
-            line = button(&h, line, buf, &x);
+        (len > 1) ? line = button(&h, line, buf, &x) : 0;
         buf = 0;
     }
     mx_free_node(head);

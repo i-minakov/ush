@@ -31,7 +31,7 @@
 
 #define YARIK_PEREPISIVAYET_LS 228
 
-#define ORACLE_HACK
+// #define ORACLE_HACK
 
 
 typedef struct s_jobs {
@@ -43,10 +43,10 @@ typedef struct s_jobs {
 }              t_jobs;
 
 typedef struct s_cd {
+    int f;
     int error;
     int flag_s;
     int flag_P;
-    int f;
 }              t_cd;
 
 typedef struct s_history {
@@ -56,15 +56,15 @@ typedef struct s_history {
 }              t_hst;
 
 typedef struct s_env {
+    char **n;
     int flag_i;
     int flag_u;
-    char **n;
     char *clear[1];
 }              t_env;
 
 typedef struct s_ush {
-    int last_return;
     int exit;
+    int last_return;
     struct s_list *pids;
     struct s_jobs *jobs;
     struct s_list *env_set;
@@ -143,7 +143,8 @@ int mx_check_backquote(char *s, int *i, t_frmt_lst **arr);
 int mx_check_single_quote(char *s, int *i, t_frmt_lst **arr);
 int mx_check_dollar(char *s, int *i, t_frmt_lst **arr);
 void mx_pop_format(t_frmt_lst **del);
-void mx_push_format(t_frmt_lst **add, int start, int end, t_frmt_lst **del);
+void mx_push_format(t_frmt_lst **add, int start, int end, 
+                    t_frmt_lst **del);
 void mx_push_back_format(t_frmt_lst **add, int start, int end,
                          t_frmt_lst **del);
 void mx_free_format_lists(t_frmt_lst **arr);
@@ -189,7 +190,7 @@ int mx_ush_env(char **args, t_jobs **jobs);
 int mx_ush_exit(char **args, t_ush *ush);
 int mx_ush_pwd(char **args);
 bool mx_opencheck(char *dirname, t_cd *in);
-char *mx_read_stream(t_hst *h);
+char *mx_read_stream(t_ush *ush, t_hst *h);
 void mx_free_list(t_hst **list);
 void mx_free_list2(t_list **list);
 int mx_ush_which(char **args);
@@ -215,3 +216,4 @@ bool mx_job_chars_find(char *args, t_jobs **jobs);
 int mx_name_search(char *tmp , t_jobs *jobs);
 int mx_ush_jobs(char **args, t_jobs **jobs);
 int mx_env_print(void);
+void mx_signal_def();

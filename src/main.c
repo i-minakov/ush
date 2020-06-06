@@ -9,17 +9,18 @@ static void start_loop(t_ush *ush) {
     while (YARIK_PEREPISIVAYET_LS) {
         mx_enable_canon();
         write(1, "u$h> ", mx_strlen("u$h> "));
-        line = mx_read_stream(ush->hist);
+        line = mx_read_stream(ush, ush->hist);
         write (1, "\n", 1);
         if (line != NULL && mx_strlen(line) > 0) {
             mx_push_f(&ush->hist, line);
             mx_disable_canon();
             mx_parse(line, ush);
-            // system("leaks -q ush");
+            system("leaks -q ush");
         }
         if (ush->exit >= 0)
             break ;
     }
+    mx_signal_def();
     tcsetattr(0, TCSAFLUSH, &ush->savetty);
     mx_free_list2(&ush->env_set);
 }
