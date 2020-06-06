@@ -31,9 +31,9 @@ static void print_job(t_jobs *jobs, int num, char *flags) {
     mx_printint(j->num);
     write(1, "]", 1);
     write(1, "  ", 2);
-    if (j->next == NULL)
+    if (j->sign == '+')
         write(1, "+", 1);
-    else if (j->next->next == NULL)
+    else if (j->sign == '-')
         write(1, "-", 1);
     else
        write(1, " ", 1);
@@ -64,7 +64,7 @@ static int ch_job(char **args, t_jobs *jobs, int i, char *flags) {
     t_jobs *j = jobs;
 
     if ((flags == NULL && args[1] != NULL) || (flags != NULL && args[2] != NULL)) { // если не нул
-        write(1, "+++++\n", 6);
+        //write(1, "+++++\n", 6);
         for ( ; args[i]; i++) {
             ind = mx_name_search(args[i], jobs);
             if (ind == -1) {

@@ -9,10 +9,10 @@ static bool cur_job(char *tmp , t_jobs **jobs){
             write (1, "fg: no current job\n", 19);
             return false;
         }
-        else if(j->next == NULL) //голова
+        else if(j->next == NULL || j->sign == '+') //голова
             mx_del_job(&j, 1);
         else {
-            while(j->next->next != NULL)
+            while(j->next->sign != '+')
                 j = j->next;
             mx_del_job(&j, 2);
         }
@@ -28,10 +28,10 @@ static bool prev_job(char *tmp , t_jobs **jobs){
             write (1, "fg: no previous job\n", 20);
             return false;
         }
-        else if(j->next->next == NULL)
+        else if(j->sign == '-')
             mx_del_job(jobs, 1);
         else {
-            while(j->next->next->next != NULL)
+            while(j->next->sign != '-')
                 j = j->next;
             mx_del_job(&j, 2);
         }

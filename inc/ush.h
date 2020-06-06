@@ -36,6 +36,8 @@
 
 typedef struct s_jobs {
     int num;
+    int index;
+    char sign;
     pid_t pid;
     char **data;
     char *pwd;
