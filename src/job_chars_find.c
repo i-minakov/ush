@@ -10,11 +10,11 @@ static bool cur_job(char *tmp , t_jobs **jobs){
             return false;
         }
         else if(j->next == NULL || j->sign == '+') //голова
-            mx_del_job(&j, 1);
+            mx_del_job(&j, 1, jobs);
         else {
             while(j->next->sign != '+')
                 j = j->next;
-            mx_del_job(&j, 2);
+            mx_del_job(&j, 2, jobs);
         }
     }
     return true;
@@ -29,11 +29,11 @@ static bool prev_job(char *tmp , t_jobs **jobs){
             return false;
         }
         else if(j->sign == '-')
-            mx_del_job(jobs, 1);
+            mx_del_job(jobs, 1, jobs);
         else {
             while(j->next->sign != '-')
                 j = j->next;
-            mx_del_job(&j, 2);
+            mx_del_job(&j, 2, jobs);
         }
     }
     return true;
@@ -50,13 +50,13 @@ static bool name_job(char *tmp , t_jobs **jobs){
             return false;
         }
         else if (num == 0)
-            mx_del_job(&j, 1);
+            mx_del_job(&j, 1, jobs);
         else {
             while(num - 1){
                 j = j->next;
                 num--;
             }
-            mx_del_job(&j, 2);
+            mx_del_job(&j, 2, jobs);
         }
     }
     return true;

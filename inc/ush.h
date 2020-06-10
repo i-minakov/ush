@@ -211,7 +211,7 @@ int mx_ush_unset(char **args, t_list **env_set);
 int mx_ush_fg(char **args, t_jobs **jobs);
 int mx_no_such(char *name, char *args, char *str);
 int mx_not_found(char *args, char *str);
-void mx_del_job(t_jobs **jobs, int flag);
+void mx_del_job(t_jobs **jobs, int flag, t_jobs **first);
 char *mx_cut_str_forjob(char *args);
 bool mx_job_num_find(char *args, t_jobs **jobs);
 bool mx_job_chars_find(char *args, t_jobs **jobs);

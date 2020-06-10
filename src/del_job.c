@@ -42,23 +42,42 @@ static void reload(pid_t pid, char **args, t_jobs **jobs) {
     errno = 0;
 }
 
-static void del_body(t_jobs **jobs) {
+static void del_body(t_jobs **jobs, t_jobs **first) {
     t_jobs *j = *jobs;
     t_jobs *del = j->next;
     char sign = '\0';
     char **data = mx_copy_dub_arr(del->data);
-    
     int pid = del->pid;
+    
     j->next = NULL;
-    j->next = del->next;
+    if (del->next != NULL)
+        j->next = del->next;
     del->next = NULL;
     sign = del->sign;
     mx_free_jobs(&del);
     plus_on_min(jobs, sign);
-    reload(pid, data, jobs);
+    reload(pid, data, first);
 }
 
-void mx_del_job(t_jobs **jobs, int flag) {
+static void forever_alone(t_jobs **jobs, t_jobs **f, char **data) {
+    t_jobs *j = *jobs;
+    char sign = '\0';
+    int pid = j->pid;
+    
+    if (j->data != NULL) 
+        mx_del_strarr(&j->data);
+    mx_strdel(&j->pwd);
+    j->data = NULL;
+    j->num = -1;
+    j->pid = -1;
+    j->index = 0;
+    sign = j->sign;
+    j->sign = '\0';
+    plus_on_min(jobs, sign);
+    reload(pid, data, f);
+}
+
+void mx_del_job(t_jobs **jobs, int flag, t_jobs **first) {
     t_jobs *j = *jobs;
     t_jobs *del = j->next;
     char **data = NULL;
@@ -67,19 +86,8 @@ void mx_del_job(t_jobs **jobs, int flag) {
     
     if (flag == 1) {
         data = mx_copy_dub_arr(j->data);
-        if (j->next == NULL) { //когда один остается
-            if (j->data != NULL) 
-                mx_del_strarr(&j->data);
-            mx_strdel(&j->pwd);
-            j->data = NULL;
-            j->num = -1;
-            j->pid = -1;
-            j->index = 0;
-            sign = j->sign;
-            j->sign = '\0';
-            plus_on_min(jobs, sign);
-            reload(pid, data, &j);
-        }
+        if (j->next == NULL) //когда один остается
+            forever_alone(jobs, first, data);
         else {
             j->next = NULL;
             sign = j->sign;
@@ -87,10 +95,9 @@ void mx_del_job(t_jobs **jobs, int flag) {
             mx_free_jobs(&j);
             *jobs = del;
             plus_on_min(jobs, sign);
-            reload(pid, data, jobs);
+            reload(pid, data, first);
         }
     }
-    if (flag == 2) { //тело
-        del_body(jobs);
-    }
+    if (flag == 2) //тело
+        del_body(jobs, first);
 }

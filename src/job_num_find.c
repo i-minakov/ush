@@ -5,7 +5,7 @@ static bool del_part(t_jobs **jobs, int num) {
 
     while(j) { 
         if(j->next->num == num) {
-            mx_del_job(&j, 2);
+            mx_del_job(&j, 2, jobs);
             return true;
         }
         j = j->next;
@@ -22,7 +22,7 @@ bool mx_job_num_find(char *args, t_jobs **jobs) {
     bool flag = true;
 
     if(j->num == num)
-        mx_del_job(jobs, 1);
+        mx_del_job(jobs, 1, jobs);
     else if (j->num > 0 && j->next != NULL) //остальное
         flag = del_part(jobs, num);
     else 

@@ -11,7 +11,7 @@ static void plus_on_min(t_jobs **j, int num) {
     }
 }
 
-int find_bigest(t_jobs *j) {
+static int find_bigest(t_jobs *j) {
     t_jobs *job = j;
     int res = 0;
 
@@ -22,29 +22,36 @@ int find_bigest(t_jobs *j) {
     return res + 1;
 }
 
+static void insert(t_jobs **j, pid_t pid, char **args, t_jobs **f) {
+    t_jobs *job = *j;
+    t_jobs *tmp = job->next;
+
+    job->next = mx_create_job(args, job->num + 1, 
+        pid, getenv("PWD"));
+    job->next->next = tmp;
+    job->next->index = find_bigest(job);
+    job->next->sign = '+';
+    plus_on_min(f, job->next->index);
+    return;
+}
+
 static void to_body(t_jobs **j, char **args, pid_t pid) {
     t_jobs *job = *j;
-    
+
     while (job) {
         if (job->next == NULL) {
             job->next = mx_create_job(args, job->num + 1, 
-                pid, getenv("PWD"));
-                job->next->index = find_bigest(job);
-                job->next->sign = '+';
-                plus_on_min(j, job->next->index);
+                                      pid, getenv("PWD"));
+            job->next->index = find_bigest(job);
+            job->next->sign = '+';
+            plus_on_min(j, job->next->index);
             break;
         }
         else if (job->next->num == job->num + 1) //до последней
             job = job->next;
         else { //пропущеный номер
-            t_jobs *tmp = job->next;
-            job->next = mx_create_job(args, job->num + 1, 
-                pid, getenv("PWD"));
-            job->next->next = tmp;
-            job->next->index = find_bigest(job);
-            job->next->sign = '+';
-            plus_on_min(j, job->next->index);
-            break;
+            insert(&job, pid, args, j);
+            break ;
         }  
     }
 }
@@ -52,8 +59,6 @@ static void to_body(t_jobs **j, char **args, pid_t pid) {
 void mx_add_job(t_jobs **j, char **args, pid_t pid) {
     t_jobs *job = *j;
 
-    // if (isatty(0))
-    //     printf("\nush: suspended %s\n", args[0]);
     if (job->data == NULL && job->num == -1) { //если пустой
         job->data = mx_copy_dub_arr(args);
         job->index = 0;
