@@ -15,7 +15,6 @@ static void start_loop(t_ush *ush) {
             mx_push_f(&ush->hist, line);
             mx_disable_canon();
             mx_parse(line, ush);
-            system("leaks -q ush");
         }
         if (ush->exit >= 0)
             break ;
@@ -38,7 +37,6 @@ static void pipe_call(t_ush *ush) {
     }
     mx_parse(line, ush);
     mx_free_list2(&ush->env_set);
-    // system("leaks -q ush");
 }
 
 static void set_shell_lvl_up(void) {

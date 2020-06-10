@@ -10,7 +10,8 @@ void mx_free_jobs(t_jobs **jobs) {
         j->data = NULL;
         j->num = 0;
         j->pid = 0;
-
+        j->index = 0;
+        j->sign = '\0';
         free(j);
         j = NULL;
         j = hren;
