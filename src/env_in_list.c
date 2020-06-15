@@ -62,15 +62,16 @@ static bool var_check(char *src) {
     return true;
 }
 
-void mx_env_in_list(t_list **env_set, char *src) {
+bool mx_env_in_list(t_list **env_set, char *src) {
     t_list *tmp = *env_set;
 
     if (var_check(src)) {
         if (tmp->data == NULL) { //если пусто
             tmp->data = mx_strjoin(tmp->data, src);
-            return;
         }
-        if (!change_var(env_set, src)) //добавить
+        else if (!change_var(env_set, src)) //добавить
             mx_push_backdup(env_set, src);
+        return true;
     }
+    return false;
 }

@@ -36,6 +36,25 @@ static bool coi(t_list **env, t_list **n, int count, char **tmp) {
     return false;
 }
 
+
+static bool global_set(char *args) {
+    extern char **environ;
+    char **tmp = NULL;
+
+    for (int i = 0; environ[i]; i++) {
+        if (mx_get_substr_index(environ[i], args) >= 0) {
+            tmp = mx_strsplit(environ[i], '=');
+            if (mx_strcmp_null(tmp[0], args) == 0) {
+               unsetenv(tmp[0]); 
+               mx_del_strarr(&tmp);
+               return true;
+            }
+            mx_del_strarr(&tmp);
+        }
+    }
+    return false;
+}
+
 int mx_ush_unset(char **args, t_list **env_set) {
     char **tmp = NULL;
     int count;
@@ -44,7 +63,8 @@ int mx_ush_unset(char **args, t_list **env_set) {
     for (int i = 1; args[i]; i++) {
         tmp = mx_strsplit(args [i], '=');
         count = 0;
-        if (f != NULL && f->data != NULL) {
+
+        if (!global_set(tmp[0]) && (f != NULL && f->data != NULL)) {
             for ( ; f; f = f->next, count++) {
                 if (mx_get_substr_index(f->data, tmp[0]) >= 0) {
                     if (coi(env_set, &f, count, tmp))

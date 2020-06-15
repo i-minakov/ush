@@ -3,7 +3,7 @@ INC = inc/ush.h
 SRC := $(wildcard src/*.c)
 OBJ = $(addprefix obj/, $(notdir $(SRC:%.c=%.o)))
 LIBMX = libmx/libmx.a
-FLAGS = -std=c11 -Wall -Wextra -Werror -Wpedantic
+FLAGS = -g -fsanitize=address #-std=c11 -Wall -Wextra -Werror -Wpedantic 
 SANFLAG = -g -fsanitize=address
 
 all: $(NAME)

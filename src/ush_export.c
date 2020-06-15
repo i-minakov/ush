@@ -69,12 +69,20 @@ int mx_ush_export(char **args, t_list **env_set) {
         return mx_env_print();
      // дополнние сета експортом
     for (int i = 1; args[i]; i++) {
-        mx_env_in_list(env_set, args[i]);
-        var = check(args[i], *env_set);
-        if (mx_strcmp_null(var, "\n") != 0)
-            ch_env (args[i], var);
-        if (var != NULL)
-            mx_strdel(&var);
+        if (mx_env_in_list(env_set, args[i])) {
+            var = check(args[i], *env_set);
+            if (mx_strcmp_null(var, "\n") != 0)
+                ch_env (args[i], var);
+            if (var != NULL)
+                mx_strdel(&var);
+        }
     }
+
+    // for ( t_list *l = *env_set; l; l=l->next) {
+    //     if(l->data != NULL)
+    //         write(1, l->data, mx_strlen(l->data));
+    // }
+    // mx_env_print();
+
     return 0;
 }

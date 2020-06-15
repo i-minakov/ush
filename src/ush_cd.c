@@ -63,8 +63,7 @@ char *prosto_path(char *newpwd, char *m, t_cd *in) {
     else 
         newpwd = mx_delit_fre(newpwd, "/");
     newpwd = mx_delit_fre(newpwd, m);
-    // printf("%s\n", newpwd);
-    if (!mx_opencheck(newpwd, in)) {
+    if (!mx_opencheck(newpwd, &in->error, in->flag_s)) {
         free(newpwd);
         return NULL;
     }
@@ -97,15 +96,13 @@ char *gogo(char *newpwd, char **m, t_cd *in) {
 char *proverka(char **args, int f, char *pwd) {
     char *newpwd = NULL;
 
-    if (args[f][0] == '~')
-        newpwd = mx_strdup(getenv("HOME")); 
-    else if (args[f][0] != '/')
+    if (args[f][0] != '/')
         newpwd = mx_strdup(pwd); 
     return newpwd;
 }
 
 int tak_syak(char **args, char *pwd, t_cd *in) {
-    if (args[1] == NULL || !strcmp(args[in->f], "~")) 
+    if (args[1] == NULL) 
         return env_work(getenv("HOME"), pwd, args[0], in);
     if (!strcmp(args[in->f], "-") || !strcmp(args[in->f], "~-")) 
         return env_work(getenv("OLDPWD"), pwd, args[in->f], in);
@@ -124,7 +121,7 @@ int mx_ush_cd(char **args) {
     
     in->f = 1;
     if (tak_syak(args, pwd, in) > 0)
-        return 2;
+        return 0;
     (args[1][0] == '-') ? in->f = 2 : 0;
     in->f == 2 && mx_get_char_index(args[1], 's') > -1 ? in->flag_s = 2 : 0;
     in->f == 2 && mx_get_char_index(args[1], 'P') > -1 ? in->flag_P = 1 : 0;
@@ -137,5 +134,5 @@ int mx_ush_cd(char **args) {
     }
     env_work(newpwd, pwd, args[in->f], in);
     free(newpwd);
-    return 2;
+    return 0;
 }

@@ -1,5 +1,26 @@
 #include "../inc/ush.h"
 
+static bool check(char **args) {
+    extern char **environ;
+    char **tmp = NULL;
+
+    if (mx_get_substr_index(args[0], "/") > 0)
+        return true;
+    else {
+        for (int i = 0; environ[i]; i++) {
+            if (mx_get_substr_index(environ[i], "PATH") >= 0) {
+                tmp = mx_strsplit(environ[i], '=');
+                if (mx_strcmp_null(tmp[0], "PATH") == 0) {
+                mx_del_strarr(&tmp);
+                return true;
+                }
+                mx_del_strarr(&tmp);
+            }
+        }
+    }
+    return false;
+}
+
 int builtin(char **args, t_ush *ush) {
     if (!strcmp(args[0], "echo"))
         return mx_ush_echo(args);
@@ -34,6 +55,7 @@ int mx_detect_builds(char **args, t_ush *ush) {
     bins = mx_detect_exp(args, ush->hist, &ush->env_set);;
     if (bins != 3) 
         return bins;
-    else
+    else if (check(args))
         return mx_straus_proc(args, &ush->jobs);
+    return mx_not_found(args[0], "ush: command"); //error
 }

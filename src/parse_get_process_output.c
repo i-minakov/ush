@@ -38,7 +38,7 @@ static char *process_output(char *str, int (*parse_p)(char *, t_ush *),
     pipe(p);
     if ((pid = fork()) == -1) {
         perror("fork");
-        return NULL;
+        return NULL; 
     }
     if (pid == 0) {
         tcsetpgrp(0, getpid());
@@ -72,3 +72,4 @@ char *mx_get_subst_outputs(char *str, t_ush *ush) {
     mx_quit_parse(NULL, ush, -1, NULL);
     return sum_output;
 }
+
