@@ -6,5 +6,5 @@ int mx_not_found(char *args, char *str) {
     write(2, " not found: ", 12);
     write(2, args, mx_strlen(args));
     write(2, "\n", 1);
-    return 1;
+    return 127;
 }

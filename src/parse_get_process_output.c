@@ -68,6 +68,8 @@ char *mx_get_subst_outputs(char *str, t_ush *ush) {
         sum_output = mx_cooljoin(sum_output, process_output(*s,
                                  mx_parse_exec, ush));
     }
+    if (!sum_output)
+        sum_output = strdup("");
     mx_del_strarr(&subcommands);
     mx_quit_parse(NULL, ush, -1, NULL);
     return sum_output;

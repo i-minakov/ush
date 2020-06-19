@@ -49,6 +49,7 @@ typedef struct s_cd {
     int error;
     int flag_s;
     int flag_P;
+    char *newpwd;
 }              t_cd;
 
 typedef struct s_history {
@@ -66,6 +67,8 @@ typedef struct s_env {
 
 typedef struct s_ush {
     int exit;
+    char *pwd;
+    char *home;
     int last_return;
     struct s_list *pids;
     struct s_jobs *jobs;
@@ -170,7 +173,7 @@ void mx_create_outer_subst_n_dblq_list(char *s, t_frmt_lst **arr);
 char *mx_get_subst_outputs(char *str, t_ush *ush);
 t_range *mx_is_inside_of(int i, enum e_quote type, t_frmt_lst **arr);
 int mx_handle_substitutions(char **str, t_frmt_lst **arr, t_ush *ush);
-int mx_tilde_expansion(char **argv);
+int mx_tilde_expansion(char **argv, t_ush *ush);
 int mx_ush_echo(char **argv);
 char mx_getopt(int argc, char **argv, char *optstring, int *optind);
 void mx_enable_canon(void);
@@ -187,10 +190,10 @@ t_jobs *mx_create_job(char **data, int num, pid_t pid, char *pwd);
 char **mx_copy_dub_arr(char **args);
 void mx_free_jobs(t_jobs **jobs);
 void mx_push_f(t_hst **hs, char *data);
-int mx_ush_cd(char **args);
+int mx_ush_cd(char **args, t_ush *ush);
 int mx_ush_env(char **args, t_jobs **jobs);
 int mx_ush_exit(char **args, t_ush *ush);
-int mx_ush_pwd(char **args);
+int mx_ush_pwd(char **args, t_ush *ush);
 bool mx_opencheck(char *dirname, int *error, int flag_link);
 char *mx_read_stream(t_ush *ush, t_hst *h);
 void mx_free_list(t_hst **list);
@@ -219,3 +222,4 @@ int mx_name_search(char *tmp , t_jobs *jobs);
 int mx_ush_jobs(char **args, t_jobs **jobs);
 int mx_env_print(void);
 void mx_signal_def();
+char *gogo(char *newpwd, char **m, t_cd *in);

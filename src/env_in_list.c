@@ -48,6 +48,10 @@ static bool s_case(char ***v) {
 static bool var_check(char *src) {
     char **var = mx_strsplit(src, '=');
 
+    if((var == NULL || var[0] == NULL) || src[0] == '=') {
+        write(1, "u$h: bad assignment\n", 20);
+        return false;
+    }
     if (mx_isalpha(var[0][0])) {
         for (int i = 1; var[0][i]; i++) {
             if (var[0][i] < 48 && var[0][i] > 122)

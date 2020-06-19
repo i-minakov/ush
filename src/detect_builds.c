@@ -24,10 +24,10 @@ static bool check(char **args) {
 int builtin(char **args, t_ush *ush) {
     if (!strcmp(args[0], "echo"))
         return mx_ush_echo(args);
-    if (!strcmp(args[0], "cd"))
-        return mx_ush_cd(args);
+    if (!strcmp(args[0], "cd") || !strcmp(args[0], "chdir"))
+        return mx_ush_cd(args, ush);
     if (!strcmp(args[0], "pwd"))
-        return mx_ush_pwd(args);
+        return mx_ush_pwd(args, ush);
     if (!strcmp(args[0], "env"))
         return mx_ush_env(args, &ush->jobs);
     if (!strcmp(args[0], "exit"))
@@ -42,6 +42,10 @@ int builtin(char **args, t_ush *ush) {
         return mx_ush_fg(args, &ush->jobs);
     if (!strcmp(args[0], "jobs"))
         return mx_ush_jobs(args, &ush->jobs);
+    if (!strcmp(args[0], "true"))
+        return 0;
+    if (!strcmp(args[0], "false"))
+        return 1;
     return -1;
 }
 

@@ -77,12 +77,5 @@ int mx_ush_export(char **args, t_list **env_set) {
                 mx_strdel(&var);
         }
     }
-
-    // for ( t_list *l = *env_set; l; l=l->next) {
-    //     if(l->data != NULL)
-    //         write(1, l->data, mx_strlen(l->data));
-    // }
-    // mx_env_print();
-
     return 0;
 }

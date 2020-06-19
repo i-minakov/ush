@@ -50,13 +50,38 @@ int find_exp_h(char *str, char *var, t_list **env_set) {
     return res;
 }
 
+static bool global_set(char *args) {
+    extern char **environ;
+    char **tmp = NULL;
+    char **tmp2 = mx_strsplit(args, '=');
+
+    for (int i = 0; environ[i]; i++) {
+        if (mx_get_substr_index(environ[i], tmp2[0]) >= 0) {
+            tmp = mx_strsplit(environ[i], '=');
+            if (mx_strcmp_null(tmp[0], tmp2[0]) == 0) {
+               setenv(tmp2[0], tmp2[1], 1); 
+               mx_del_strarr(&tmp);
+               mx_del_strarr(&tmp2);
+               return true;
+            }
+            mx_del_strarr(&tmp);
+        }
+    }
+    mx_del_strarr(&tmp2);
+    return false;
+}
+
 int mx_detect_exp(char **proc, t_hst *start_h, t_list **env_set) {
     int tmp;
 
+    if(proc[0][0] == '=') 
+        return 3;
     if (mx_count_substr(proc[0], "=") == 1 && 
         mx_isalpha(proc[0][mx_get_char_index(proc[0], '=') - 1])) {
         mx_env_in_list(env_set, proc[0]);
         for (t_hst *h = start_h; h; h = h->next) {
+            if (global_set(proc[0]))
+                return 0;
             if (mx_get_substr_index(h->data, "export") >= 0) {
                 tmp = find_exp_h(h->data, proc[0], env_set);
                 if (tmp != 3)
@@ -69,3 +94,4 @@ int mx_detect_exp(char **proc, t_hst *start_h, t_list **env_set) {
     }
     return 3; // неизвестная команда
 }
+

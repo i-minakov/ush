@@ -25,11 +25,12 @@ static int check_access(char *args, int flag) {
 
 static int built_check(char *args, int flag) {
     char *built[] = {"cd", "pwd", "exit", "which", "env", "fg", 
-        "jobs", "export", "unset", "false", "true", NULL};
+        "jobs", "export", "unset", "false", "true", 
+            "echo", "chdir", NULL};
     
     for (int i = 0; built[i]; i++) {
         if (!strcmp(built[i], args)) {
-            printf("%s: shell built-in command\n", built[i]);
+            printf("%s: ush built-in command\n", built[i]);
             return flag;
         }
     }

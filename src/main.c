@@ -19,8 +19,8 @@ static void start_loop(t_ush *ush) {
         if (ush->exit >= 0)
             break ;
     }
-    mx_signal_def();
     tcsetattr(0, TCSAFLUSH, &ush->savetty);
+    mx_signal_def();
     mx_free_list2(&ush->env_set);
 }
 
@@ -49,11 +49,25 @@ static void set_shell_lvl_up(void) {
     free(s);
 }
 
+static void set_def_env(t_ush *ush) {
+    struct passwd *pw = getpwuid(getuid());
+    extern char **environ;
+
+    ush->pwd = getcwd(NULL, 0);
+    ush->home = pw->pw_dir;
+    if (environ[0] == NULL)
+        setenv("SHLVL", "1", 1);
+    setenv("PWD", ush->pwd, 1);
+    setenv("HOME", ush->home, 1);
+    setenv("LOGNAME", getlogin(), 1);
+}
+
 int main(void) {
     int ex = 0;
-    t_ush *ush = (t_ush *)calloc(6, sizeof(t_ush));
+    t_ush *ush = (t_ush *)calloc(8, sizeof(t_ush));
     ush->jobs = mx_create_job(NULL, -1, -1, NULL);
 
+    set_def_env(ush);
     set_shell_lvl_up();
     ush->exit = -1;
     if (isatty(0)) {
@@ -61,11 +75,12 @@ int main(void) {
         start_loop(ush);
         ex = ush->exit;
         mx_free_list(&ush->hist);
-        exit(ex);
     }
     else
         pipe_call(ush);
     mx_free_jobs(&ush->jobs);
+    mx_strdel(&ush->pwd);
     free(ush);
+    exit(ex);
     return 0;
 }

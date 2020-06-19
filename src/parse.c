@@ -1,7 +1,7 @@
 #include "../inc/ush.h"
 
 void mx_quit_parse(char *line, t_ush *ush, int ret_val, 
-                       t_frmt_lst **arr ) {
+                   t_frmt_lst **arr ) {
     mx_free_format_lists(arr);
     if (line)
         free(line);
@@ -23,7 +23,7 @@ int mx_parse_exec(char *subline, t_ush *ush) {
     }
     subline = mx_clear_str(subline);
     argv = mx_strsplit(subline, M_DEL);
-    mx_quit_parse(subline, ush, mx_tilde_expansion(argv) == -1 ?
+    mx_quit_parse(subline, ush, mx_tilde_expansion(argv, ush) == -1 ?
         1 : mx_detect_builds(argv, ush), arr);
     mx_del_strarr(&argv);
     return 0;
@@ -32,8 +32,8 @@ int mx_parse_exec(char *subline, t_ush *ush) {
 int mx_semicolon_split(char *line, t_ush *ush, char ***subcommands) {
     t_frmt_lst *arr[NUM_Q] = {NULL};
 
-    if (mx_get_format_str(line, arr) < 0) {  // parse errors
-        mx_quit_parse(line, ush, 1, arr);  // line is freeed
+    if (!line || mx_get_format_str(line, arr) < 0) {  // parse errors
+        mx_quit_parse(line, ush, line ? 1 : -1, arr);  // line is freeed
         return -1;
     }
     mx_mark_semicolon(line, arr);

@@ -42,12 +42,14 @@ static int check(t_ush *ush, int buf, char **l) {
 
     if (buf == 10 || buf == 12 || (buf == 4 && 
         (line == NULL || !strlen(line))) || buf == 3) {
-            if (buf == 3) {
-                line != NULL ? mx_strdel(l) : 0; 
-                ush->last_return = 130;
-            }
-            else if (line != NULL && !strlen(line))
-                mx_strdel(l);
+        if (buf == 3) {
+            if (line != NULL)
+                mx_strdel(l); 
+            ush->last_return = 130;
+        }
+        else if (line != NULL && !strlen(line))
+            mx_strdel(l);
+        fflush(stdout);
         return 1;
     }
     return 0;
