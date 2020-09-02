@@ -12,19 +12,19 @@ a history mechanism, and a host of other features.
 ```
 
 ## Features:
-```
-1. execution of external commands (bin files), 
-2. execution of builtins,
-3. meta-circular interpreter,
-4. interpretation of complex grammar of input line including command 
+
+**1.** execution of external commands (bin files), 
+**2.** execution of builtins,
+**3.** meta-circular interpreter,
+**4.** interpretation of complex grammar of input line including command 
 separator ( ; ), pipeline ( | ), command substitution, redirections.
-5. expansions of tilda (~),
-6. variables ( $name, ${name}),
-7. escape working accordingly in no quote, quote, double quote expressions,
-8. Ctrl+C, Ctrl+D, Ctrl+Z,
-9. command history,
-10. backspace key while inputting line.
-```
+**5.** expansions of tilda (~),
+**6.** variables ( $name, ${name}),
+**7.** escape working accordingly in no quote, quote, double quote expressions,
+**8.** Ctrl+C, Ctrl+D, Ctrl+Z,
+**9.** command history,
+**10.** backspace key while inputting line.
+
 
 ## Usage:
 ```
