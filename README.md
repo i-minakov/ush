@@ -28,9 +28,9 @@ separator ( ; ), pipeline ( | ), command substitution, redirections.
 
 ## Usage:
 ```
-**1. git clone https://github.com/vladyslav-n/ush.git**
-**2. make**
-**3. ./ush**
+1. git clone https://github.com/vladyslav-n/ush.git
+2. make
+3. ./ush
 ```
 
 ## Builtins-table:
