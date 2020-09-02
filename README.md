@@ -1,5 +1,5 @@
-#Unix shell 
-
+# Unix shell 
+--------
 A program that simulates behavior of Linux shell zsh.
 Developed as study assignment in the Ucode school.
 
@@ -25,6 +25,7 @@ separator ( ; ), pipeline ( | ), command substitution, redirections.
 8. Ctrl+C, Ctrl+D, Ctrl+Z,
 9. command history,
 10. backspace key while inputting line.
+```
 
 ## Usage:
 ```
