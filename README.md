@@ -1,7 +1,8 @@
 # Unix shell 
 --------
-A program that simulates behavior of Linux shell zsh.
-Developed as study assignment in the Ucode school.
+_A program that simulates behavior of Linux shell zsh._
+
+_Developed as study assignment in the Ucode school._
 
 ## Description:
 ```
@@ -35,7 +36,6 @@ separator ( ; ), pipeline ( | ), command substitution, redirections.
 ```
 
 ## Builtins-table:
-```
 | Builtin  | Description |
 |:-:|:-:|
 |**cd**| Change the working directory |
@@ -51,7 +51,6 @@ separator ( ; ), pipeline ( | ), command substitution, redirections.
 |**exit**| Cause the shell to exit |
 |**true**| Stop shell with exit status 0 |
 |**false**| Stop shell with non-zero exit status |
-```
          
 
 ## Developers:
