@@ -6,11 +6,9 @@ _Developed as study assignment in the Ucode school._
 
 ## Description:
 ```
-The program is a Unix shell that can be used as an interactive login shell and 
-as a command interpreter for shell scripting.
-Ush has comand line editing, builtin spelling correction, programmable command
-completion, shell functions (with autoloading), a history mechanism, and 
-a host of other features.
+The program is a Unix shell that can be used as an interactive login shell and as a command interpreter for shell scripting.
+Ush has comand line editing, builtin spelling correction, programmable command completion, shell functions (with autoloading), 
+a history mechanism, and a host of other features.
 ```
 
 ## Features:
@@ -30,9 +28,9 @@ separator ( ; ), pipeline ( | ), command substitution, redirections.
 
 ## Usage:
 ```
->**1. git clone 
->**2. make**
->**3. ./ush**
+**1. git clone https://github.com/vladyslav-n/ush.git**
+**2. make**
+**3. ./ush**
 ```
 
 ## Builtins-table:
