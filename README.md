@@ -1,14 +1,14 @@
 # Unix shell 
 --------
-_A program that simulates behavior of Linux shell zsh._
-
+_A program that simulates behavior of Linux shell zsh._\
 _Developed as study assignment in the Ucode school._
 
 ## Description:
 ```
-The program is a Unix shell that can be used as an interactive login shell and as a command interpreter for shell scripting.
-Ush has comand line editing, builtin spelling correction, programmable command completion, shell functions (with autoloading), 
-a history mechanism, and a host of other features.
+The program is a Unix shell that can be used as an interactive login shell and as a command 
+interpreter for shell scripting. Ush has comand line editing, builtin spelling correction, 
+programmable command completion, shell functions (with autoloading), a history mechanism, 
+and a host of other features.
 ```
 
 ## Features:
